@@ -1,0 +1,1 @@
+Thư mục này chưa các file thực hiện các xử lí logic business và viết cau query 

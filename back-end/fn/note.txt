@@ -1,0 +1,1 @@
+Thư mục này chưa file kết nối với database và thực heienj câu query xuống database
