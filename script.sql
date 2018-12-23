@@ -1,4 +1,4 @@
-CREATE DATABASE dackcnm;
+﻿CREATE DATABASE dackcnm;
 
 USE dackcnm;
 
@@ -6,7 +6,7 @@ USE dackcnm;
 CREATE TABLE users (
 	user_id int(11) auto_increment not null unique,
     username varchar(50) unique not null,
-    fullname varchar(50) not null,
+    fullname nvarchar(50) not null,
     phone varchar(11) not null,
     email varchar(50) not null unique,
     password varchar(100) not null,
@@ -56,7 +56,7 @@ CREATE TABLE transaction_authentication (
 CREATE TABLE account_recivers (	
     reciver_account_number varchar(13) not null,
     user_id int not null,
-    remider_name varchar(50) not null,
+    remider_name nvarchar(50) not null,
     primary key (reciver_account_number, user_id),
     foreign key (reciver_account_number) references account(account_number),
     foreign key (user_id) references users(user_id)
