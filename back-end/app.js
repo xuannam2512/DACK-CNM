@@ -6,7 +6,9 @@ var express = require('express'),
 var app = express();
 
 //api controller
-var userApiController = require('./ApiController/UserController');
+var userApiController = require('./ApiController/userController'),
+    accountApiController  =require('./ApiController/accountController'),
+    transactionController  =require('./ApiController/transactionController');
 
 
 app.use(morgan('dev'));
@@ -21,7 +23,9 @@ app.get('/', (req, res) => {
     });
 })
 
-app.use('/api', userApiController);
+app.use('/api/users', userApiController);
+app.use('/api/accounts', accountApiController);
+app.use('/api/transactions', transactionController);
 
 
 //listen on port 3000
