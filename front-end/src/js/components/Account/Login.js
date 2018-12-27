@@ -5,6 +5,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import PasswordCircle from '@material-ui/icons/Lock'
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Recaptcha from 'react-recaptcha'
 
 //redux
 import { connect } from "react-redux";
@@ -33,9 +34,17 @@ class Login extends Component {
 
     constructor() {
         super();
+
+        this._handleTextFieldChangeUsername = this._handleTextFieldChangeUsername.bind(this);
+        this._handleTextFieldChangePassoword = this._handleTextFieldChangePassoword.bind(this);
+        this.handleLogin = this.handleLogin.bind(this);
+        this.recapcharLoaded = this.recapcharLoaded.bind(this);
+        this.verifyCallback = this.verifyCallback.bind(this);
+
         this.state = {
             username: "",
-            password: ""
+            password: "",
+            isVerified: false
         }
     }
 
@@ -55,11 +64,29 @@ class Login extends Component {
         let loginEntity = {
             username: this.state.username,
             password: this.state.password
+        }        
+
+        if(this.state.isVerified)
+        {
+            this.props.login(loginEntity);
+            alert("Login " + loginEntity.username + " password: " + loginEntity.password);
+        } else {
+            alert("you are not verified!");
+        } 
+    }
+
+    //recapcha
+    recapcharLoaded() {
+        console.log("recapcha successfully loaded");
+    }
+
+    verifyCallback = res => {
+        if(res)
+        {
+            this.setState({
+                isVerified: true
+            })
         }
-
-        this.props.login(loginEntity);
-
-        alert("Login " + loginEntity.username + " password: " + loginEntity.password);
     }
 
     render() {
@@ -74,12 +101,7 @@ class Login extends Component {
                         <div className="image-box">
                             <img src={logo}></img>
                         </div>
-                    </div>
-                    <div className="row mt-2">
-                        <div className="title-box">
-                            <h2>Login to continue</h2>
-                        </div>
-                    </div>    
+                    </div>   
                     <div className="row mt-3">
                         <Grid container 
                             spacing={24} 
@@ -134,6 +156,16 @@ class Login extends Component {
                             <a className="float-right">Forgot password?</a>
                         </div>
                     </div> 
+                    <div className="row">
+                        <div className="recapcha-box">
+                            <Recaptcha
+                                sitekey="6Le7BoUUAAAAAIEx2rkvA70tvlQaJClPIKGcFSUJ"
+                                render="explicit"
+                                onloadCallback={this.recapcharLoaded}
+                                verifyCallback={this.verifyCallback}
+                            />
+                        </div>                        
+                    </div>
                     <div className="row mt-2">
                         <button type="button" className="btn-custom w-100" onClick={() => {this.handleLogin()}}>
                             Login
