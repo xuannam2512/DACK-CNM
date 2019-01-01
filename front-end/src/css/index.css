@@ -6,9 +6,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('../image/Future-of-credit-cards-protection.png');
-  background-size:     cover;                      /* <------ */
-  background-repeat:   no-repeat;
 }
 
 code {

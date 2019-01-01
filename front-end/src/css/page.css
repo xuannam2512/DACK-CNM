@@ -1,0 +1,30 @@
+.page-box {
+    width: 100%;
+    height: 100%;
+    background-color: #F8F9FA;
+    background: #F8F9FA no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.navigation-box {
+    height: 200px;
+    width: 100%;
+    border-bottom: 1px solid gray;
+}
+
+.body-box {
+    width: 100%;
+    height: 1000px;
+    padding-left: 120px;
+    padding-right: 120px;
+    padding-top: 50px;
+}
+
+.footer-box {
+    width: 100%;
+    height: 200px;
+    background-color: green;
+}
