@@ -24,20 +24,22 @@ class Account extends Component {
     render() {      
         console.log(this.props.isLogin)  
         return (
-            <div className="container-fluid">
-                {
-                    !this.props.isLogin
-                        ? <div className="row mb-5">
-                            <div className="col-md-4"></div>
-                            <div className="col-md-4 mt-5 login-background pl-4 pr-4">
-                                <Login />
+            <div className="container-fluid pl-0 pr-0">
+                <div className="account-box">
+                    {
+                        !this.props.isLogin
+                            ? <div className="row mb-5">
+                                <div className="col-md-4"></div>
+                                <div className="col-md-4 mt-5 login-background pl-4 pr-4">
+                                    <Login />
+                                </div>
+                                <div className="col-md-4"></div>
                             </div>
-                            <div className="col-md-4"></div>
-                        </div>
-                        : <div>
-                            Home page
-                        </div>
-                }                                          
+                            : <div>
+                                Home page
+                            </div>
+                    }
+                </div>                                                          
             </div>
         )
     }
