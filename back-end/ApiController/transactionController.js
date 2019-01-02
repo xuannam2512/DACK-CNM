@@ -4,8 +4,7 @@ var router = express.Router();
 
 var randomstring = require('randomstring');
 var transactionRepo = require('../Repos/transactionRepo');
-var authenRepo = require('../repos/authenRepo');
-var verifyAccessToken = require('../repos/authenRepo').verifyAccessToken;
+
 //test
 
 

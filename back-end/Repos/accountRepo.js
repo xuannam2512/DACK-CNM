@@ -8,57 +8,47 @@ exports.loadAll  = userEntity =>{
 }
 
 
-exports.getAccountNumber  = accountNumberId => {
+exports.getAccountByAccountNumber  = accountNumberId => {
     
     let sql = `select * from dackcnm.account where account_number  = ${accountNumberId}`;
 
     return db.excuteQuery(sql);
 }
 
+exports.getAccountsByUserId = user_id => {
+    let sql = `SELECT * FROM account WHERE user_id = ${user_id}`;
 
-exports.isExistAccount = account_number =>{
+    return db.excuteQuery(sql);
+}
+
+
+exports.checkExistAccount = account_number =>{
 
     var sql = `select count(*) as count from account where account_number = ${account_number}`;
 
     return db.excuteQuery(sql);
 }
 
-exports.deleteId = account_number => {
-    //write some code here
-    var sql =  `delete from account where account_number  = ${account_number}`;
+//lock a account by id
+exports.lockAccountByAccountNumber = account_number => {
+    let sql = `UPDATE account SET status = 0 WHERE account_number = ${account_number}`;
+
     return db.excuteQuery(sql);
 }
 
+//unlock a account bu account number
+exports.unlockAccountByAccountNumber = account_number => {
+    let sql = `UPDATE account SET status = 1 WHERE account_number = ${account_number}`;
 
-exports.loadAllRecivers  = () =>{
-    var sql = `SELECT * FROM account_recivers`;
     return db.excuteQuery(sql);
 }
 
-
-
-///////////////////////////////////////////////////////
-
-
+//create a account
 exports.create = (accountEntity) => {
     
     var date =  moment().format('YYYY-MM-DD HH:mm:ss');
-    var sql =  ` INSERT INTO account (account_number, user_id, balance, date) VALUES
-     ('${accountEntity.account_number}','${accountEntity.user_id}',${accountEntity.balance},'${date}') `;
-    console.log(":::::::  ",sql);
-    
+    var sql =  ` INSERT INTO account (account_number, user_id, balance, date, status) VALUES
+     ('${accountEntity.account_number}','${accountEntity.user_id}',${accountEntity.balance},'${date}', ${accountEntity.status}) `;
+
     return db.excuteQuery(sql);
 }
-
-exports.logout = (userId) => {
-    //write some code here
-    var sql =  `delete from user_refresh_token where user_id = ${userId}`;
-    return db.excuteQuery(sql);
-}
-
-exports.getId = (userId) => {
-    //write some code here
-    var sql =  `select * from users where user_id = ${userId}`;
-    return db.excuteQuery(sql);
-}
-
