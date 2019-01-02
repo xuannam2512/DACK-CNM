@@ -4,10 +4,6 @@ var router = express.Router();
 
 var randomstring = require('randomstring');
 var accountRepo = require('../Repos/accountRepo');
-var authenRepo = require('../repos/authenRepo');
-var verifyAccessToken = require('../repos/authenRepo').verifyAccessToken;
-//test
-
 
 // load all data 
 // yêu cầu quyền
@@ -31,10 +27,16 @@ router.get('/',  (req, res) => {
 // yêu cầu quyền
 router.get('/:account_number', (req, res) => {
   
-    accountRepo.getAccountNumber(req.params.account_number)
+    accountRepo.getAccountByAccountNumber(req.params.account_number)
         .then(data => {
-            res.statusCode = 200;
-            res.json(data);
+            if(data.length > 0)
+            {
+                res.statusCode = 200;
+                res.json(data[0]);
+            } else {
+                res.statusCode = 204;
+                res.end();
+            }         
         })
         .catch((err) => {
             console.log(err);
@@ -44,41 +46,63 @@ router.get('/:account_number', (req, res) => {
         });
 });
 
+//get accounts by user id
+router.get("/users/:user_id", (req, res) => {
+
+    accountRepo.getAccountsByUserId(req.params.user_id)
+    .then(data => {
+        if(data.length > 0)
+        {
+            res.statusCode = 200;
+            res.json(data);
+        } else {
+            res.statusCode = 204;
+            res.end();
+        }        
+    })
+    .catch(err => {
+        console.log(err);
+        res.statusCode = 500;
+        res.end();
+    })
+});
+
 
 async function findradom() {
     var account_number_new = await randomstring.generate({
-        length: 13,
+        length: 12,
         charset: '0123456789'
     });
-    return await accountRepo.isExistAccount(account_number_new)
+    return await accountRepo.checkExistAccount(account_number_new)
         .then(data => {
             if (data[0].count == 0) {
                 return account_number_new;
             }
-            else { return findradom(); }
+            else { 
+                return findradom(); 
+            }
         })
         .catch(err => {
-            console.log('loi : hahaha : ', err.message);
-
+            return err;
         })
 }
 
 // tạo mới 1 tài khoản account_number
 // yêu cầu quyền
-router.post('/', verifyAccessToken,(req, res) => {
+router.post('/', (req, res) => {
     // tạo ra  ra mã 11 kí tự
     var pp = new Promise(function (resolve, reject) {
         var values = findradom();
         resolve(values);
     });
     pp.then(account_number_new => {
-        var json = {
+        var account = {
             account_number: account_number_new,
             user_id: req.body.user_id,
             balance: req.body.balance
         };
 
-        accountRepo.create(json)
+        accountRepo.create(account)
             .then(data => {
                 res.statusCode = 201;
                 res.json(data);
@@ -91,23 +115,53 @@ router.post('/', verifyAccessToken,(req, res) => {
     })
 });
 
-// delete 1 tài khoản account_number
-// yêu cầu quyền
-router.delete('/', verifyAccessToken, (req, res) => {
-   accountRepo.deleteId(req.body.account_number)
-   .then(data=>{
-    res.statusCode = 200;
-    res.end();
-   })
-   .catch(err=>{
-    console.log("delete acount_number : ", err.message);
-    res.statusCode = 500;
-    res.end();
-   })
+// lock a account_number
+router.lock('/', (req, res) => {
+    if (req.body.account_number === undefined) {
+        res.statusCode = 400;
+        res.json({
+            "msg": "Error request",
+            "error": req.body.account_number
+        });
+    } else {
+        accountRepo.lockAccountByAccountNumber(req.body.account_number)
+            .then(data => {
+                res.statusCode = 200;
+                res.json({
+                    "msg": "account locked",
+                    "data": data
+                });
+            })
+            .catch(err => {
+                res.statusCode = 500;
+                res.end();
+            })
+    }
 });
 
+router.unlock('/', (req, res) => {
 
-
+    if (req.body.account_number === undefined) {
+        res.statusCode = 400;
+        res.json({
+            "msg": "Error request",
+            "error": req.body.account_number
+        });
+    } else {
+        accountRepo.unlockAccountByAccountNumber(req.body.account_number)
+            .then(data => {
+                res.statusCode = 200;
+                res.json({
+                    "msg": "account ativated",
+                    "data": data
+                });
+            })
+            .catch(err => {
+                res.statusCode = 500;
+                res.end();
+            })
+    }
+})
 
 
 module.exports = router;

@@ -22,11 +22,13 @@ CREATE TABLE users_refresh_token (
     foreign key (user_id) references users(user_id)
 );
 
+#status 0 - locked, 1 - active
 CREATE TABLE account (
 	account_number varchar(13) not null unique,
     user_id int(11) not null,
     balance bigint(32) default 0,
     date datetime default now(),
+    status int(2) not null default 0,
     primary key (account_number),
     foreign key (user_id) references users(user_id)
 );

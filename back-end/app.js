@@ -8,7 +8,11 @@ var app = express();
 //api controller
 var userApiController = require('./ApiController/userController'),
     accountApiController  =require('./ApiController/accountController'),
-    transactionController  =require('./ApiController/transactionController');
+    transactionController  =require('./ApiController/transactionController'),
+    authenController = require('./ApiController/authenController'),
+    reciverController = require('./ApiController/ReciverController');
+
+var verifyAccessToken = require('./repos/authenRepo').verifyAccessToken;
 
 
 app.use(morgan('dev'));
@@ -24,8 +28,10 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/users', userApiController);
-app.use('/api/accounts', accountApiController);
-app.use('/api/transactions', transactionController);
+app.use('/api/accounts', verifyAccessToken, accountApiController);
+app.use('/api/transactions', verifyAccessToken, transactionController);
+app.use('/api/authen', authenController);
+app.use('/api/recievers', verifyAccessToken, reciverController);
 
 
 //listen on port 3000
