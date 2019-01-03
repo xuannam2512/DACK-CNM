@@ -34,13 +34,6 @@ exports.getUserById = (userId) => {
     return db.excuteQuery(sql);
 }
 
-
-
-
-
-
-
-
 exports.loadAllReciversFlowId = (userId) => {
     //write some code here
     var sql =  `SELECT * FROM dackcnm.account_recivers where user_id = ${userId}`;

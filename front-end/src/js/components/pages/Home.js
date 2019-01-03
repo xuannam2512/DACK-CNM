@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from "react-redux"
 import NumberFormat from 'react-number-format'
 import Pagination from "react-js-pagination"
-import { BrowserRouter as Router, Route, Link, withRouter, Redirect } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 //font awesome
 import '../../../../node_modules/font-awesome/css/font-awesome.min.css'
@@ -97,11 +97,11 @@ class Home extends Component {
 
     render() {                         
 
-        var accounts = this.state.accountsDisplay.map(account => 
-            <li className="cart-item">
+        var accounts = this.state.accountsDisplay.map((account, i) => 
+            <li className="cart-item" key = {i}>
                 <div className="row ml-0 mr-0">
                     <div className="col-md-1 bank-logo-box">
-                        <img src={bankLogo} className="img-rounded bank-logo"></img>
+                        <img src={bankLogo} className="img-rounded bank-logo" alt=""></img>
                     </div>
                     <div className="col-md-6">
                         <div className="row mr-0 ml-0 bank-account-number">                         

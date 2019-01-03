@@ -1,21 +1,46 @@
 import React, { Component } from 'react'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEnvelope, faKey } from '@fortawesome/free-solid-svg-icons'
-import { BrowserRouter as Router, Route, Link, Redirect, withRouter   } from "react-router-dom"
+import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom"
+import { connect } from 'react-redux'
 
 //components
 import Account from "./Account/Account"
 import Page from './pages/Page'
 
-library.add(faEnvelope,faKey);
+const mapStateToProps = state => {
+    return { isLogined: state.isLogined };
+};
 
 class App extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
-            isLogined: true
+            isLogined: props.isLogined
+        }
+    }
+
+    checkLogin() {        
+        if(localStorage.getItem('refresh_token'))
+        {
+            return true;
+        } else {
+            return false;
+        }        
+    }
+
+    componentWillReceiveProps(nextProps)
+    {
+        this.setState({
+            isLogined: nextProps.isLogined
+        });
+    }
+
+    componentDidMount() {
+        if(localStorage.getItem("refresh_token")){
+            this.setState({
+                isLogined: true
+            });
         }
     }
 
@@ -25,18 +50,27 @@ class App extends Component {
             {
                 !this.state.isLogined
                 ?
-                <div>
-                    <Redirect to="/login"/>
+                <Switch>                    
                     <Route path="/login" component={Account}/>
-                </div>                
+                    <Redirect to="/login"/>
+                </Switch>                
                 :
-                <div>                    
+                <div>
+                {
+                    window.location.href.trim().includes('/login')
+                    ?
+                    <div>     
+                        <Redirect to="/"/> 
+                        <Route path="/" component={Page}/>                                                                                                               
+                    </div>   
+                    :
                     <Route path="/" component={Page}/> 
-                </div>
+                }                    
+                </div>                                                 
             }                              
             </Router>                    
         )
     }
 }
 
-export default App;
+export default connect(mapStateToProps)(App);

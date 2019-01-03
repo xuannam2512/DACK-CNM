@@ -6,6 +6,7 @@ import PasswordCircle from '@material-ui/icons/Lock'
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Recaptcha from 'react-recaptcha'
+import axios from 'axios';
 
 //redux
 import { connect } from "react-redux";
@@ -23,7 +24,6 @@ import logo from '../../../image/logo2.png'
 const mapDispatchToProps = dispatch => {
     return {
         login: loginEntity => {
-            console.log("login action");
             return dispatch(login(loginEntity));
         } 
     };
@@ -38,7 +38,6 @@ class Login extends Component {
         this._handleTextFieldChangeUsername = this._handleTextFieldChangeUsername.bind(this);
         this._handleTextFieldChangePassoword = this._handleTextFieldChangePassoword.bind(this);
         this.handleLogin = this.handleLogin.bind(this);
-        this.recapcharLoaded = this.recapcharLoaded.bind(this);
         this.verifyCallback = this.verifyCallback.bind(this);
 
         this.state = {
@@ -61,23 +60,37 @@ class Login extends Component {
     }
 
     handleLogin = () => {    
-        let loginEntity = {
-            username: this.state.username,
-            password: this.state.password
-        }        
-
-        if(this.state.isVerified)
-        {
-            this.props.login(loginEntity);
-            alert("Login " + loginEntity.username + " password: " + loginEntity.password);
-        } else {
-            alert("you are not verified!");
-        } 
+      
+        axios({
+            method:'post',
+            url: `http://localhost:3000/api/users/login`,
+            data: {
+                username: this.state.username,
+	            password: this.state.password
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        })
+        .then(res => {           
+            if (this.state.isVerified) {
+                localStorage.setItem('refresh_token', res.data.refreshToken);
+                localStorage.setItem('access_token', res.data.accessToken);
+                this.props.login(res.data);
+                alert("Logined");
+            } else {
+                alert("you are not verified!");
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })         
     }
 
     //recapcha
-    recapcharLoaded() {
-        console.log("recapcha successfully loaded");
+    onloadCallback = () => {
+        console.log("Recapcha is loaded!");
     }
 
     verifyCallback = res => {
@@ -99,7 +112,7 @@ class Login extends Component {
                     </div>
                     <div className="row">
                         <div className="image-box">
-                            <img src={logo}></img>
+                            <img src={logo} alt=""></img>
                         </div>
                     </div>   
                     <div className="row mt-3">
@@ -111,8 +124,7 @@ class Login extends Component {
                                 <AccountCircle/>
                             </Grid>
                             <Grid item xs={11}>                                
-                                <TextField id="input-with-icon-grid" 
-                                            ref="username"
+                                <TextField  ref="username"
                                             value={this.state.username}
                                             onChange={this._handleTextFieldChangeUsername}
                                             label="Username"                                             
@@ -130,8 +142,7 @@ class Login extends Component {
                                 <PasswordCircle/>
                             </Grid>
                             <Grid item xs={11}>
-                                <TextField id="input-with-icon-grid"
-                                    ref="password"
+                                <TextField  ref="password"
                                     value={this.state.password}
                                     onChange={this._handleTextFieldChangePassoword}
                                     label="Password"
@@ -153,7 +164,7 @@ class Login extends Component {
                             
                         />
                         <div className="w-50 mt-2 ml-5">
-                            <a className="float-right">Forgot password?</a>
+                            <span className="float-right">Forgot password?</span>
                         </div>
                     </div> 
                     <div className="row">
@@ -161,7 +172,7 @@ class Login extends Component {
                             <Recaptcha
                                 sitekey="6Le7BoUUAAAAAIEx2rkvA70tvlQaJClPIKGcFSUJ"
                                 render="explicit"
-                                onloadCallback={this.recapcharLoaded}
+                                onloadCallback={this.onloadCallback}
                                 verifyCallback={this.verifyCallback}
                             />
                         </div>                        

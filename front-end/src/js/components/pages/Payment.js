@@ -5,7 +5,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+//import Typography from '@material-ui/core/Typography';
 
 //import CSS
 import '../../../css/Payment.css'
@@ -27,20 +27,20 @@ function getSteps() {
     return ['Account sender', 'Account receiver', 'Verify', 'Complete'];
 }
 
-function getStepContent(stepIndex) {
-    switch (stepIndex) {
-        case 0:
-            return 'Account sender';
-        case 1:
-            return 'Account receiver';
-        case 2:
-            return 'Verify';
-        case 3: 
-            return 'Complete';
-        default:
-            return 'Uknown stepIndex';
-    }
-}
+// function getStepContent(stepIndex) {
+//     switch (stepIndex) {
+//         case 0:
+//             return 'Account sender';
+//         case 1:
+//             return 'Account receiver';
+//         case 2:
+//             return 'Verify';
+//         case 3: 
+//             return 'Complete';
+//         default:
+//             return 'Uknown stepIndex';
+//     }
+// }
 
 class Payment extends Component {
 
