@@ -40,13 +40,23 @@ exports.loadByAccount = account_number => {
     return db.excuteQuery(sql);
 }
 
-exports.create = transEntity => {
+exports.createATransfer = transEntity => {
 
     var date =  moment().format('YYYY-MM-DD HH:mm:ss');
 
     var sql = `insert into dackcnm.transaction (payments, sender_account_number, reciver_account_number, 
         amount, date, type) values (${transEntity.payments}, "${transEntity.sender_account_number}", 
         "${transEntity.reciver_account_number}", ${transEntity.amount}, "${date}", ${transEntity.type})`;
+    console.log(sql);
+    return db.excuteQuery(sql);
+}
+
+exports.createARecharge = transEntity => {
+    var date =  moment().format('YYYY-MM-DD HH:mm:ss');
+
+    var sql = `insert into dackcnm.transaction (payments, sender_account_number, reciver_account_number, 
+        amount, date, type, success) values (${transEntity.payments}, "${transEntity.sender_account_number}", 
+        "${transEntity.reciver_account_number}", ${transEntity.amount}, "${date}", ${transEntity.type}, 1)`;
     console.log(sql);
     return db.excuteQuery(sql);
 }

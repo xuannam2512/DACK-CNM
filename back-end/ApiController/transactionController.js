@@ -79,16 +79,26 @@ router.get('/user/:account_number', (req, res) => {
 router.post('/', (req, res) => {
 
     if (req.body.type == 0) {           //nap tien
-        transactionRepo.create(req.body)
+        transactionRepo.createARecharge(req.body)
         .then(rows => {
-            res.statusCode = 201;
-            res.json(rows);
+
+            accountRepo.addBalance(req.body.reciver_account_number, req.body.amount)
+            .then(values => {
+                res.statusCode = 201;
+                res.json({"message": "Nap tien thanh cong"});
+            })
+            .catch(err => {
+                res.statusCode = 500;
+                res.end();
+            });
         })
         .catch(error => {
             res.statusCode = 500;
             res.end();
         });
     } else if (req.body.type == 1) {    //chuyen tien
+
+        //kiem tra tien trong tai khoan nguoi gui co du de thuc hien giao dich hay khong
         var subAmount = req.body.amount;
         var fee = 5000;
         if (req.body.payments == 1){
@@ -98,7 +108,7 @@ router.post('/', (req, res) => {
         accountRepo.getAccountByAccountNumber(req.body.sender_account_number)
         .then(acc => {
             if (acc[0].balance >= subAmount) {
-                transactionRepo.create(req.body)
+                transactionRepo.createATransfer(req.body)
                 .then(rows => {
                     res.statusCode = 201;
                     res.json(rows);
@@ -208,56 +218,41 @@ router.post('/code/verify', (req, res) => {
     .then(rows => {
         if (rows[0].count == 1) {
 
-            if (rows[0].type == 0) {                //nap tien vao tai khoan
-
-                var p1 = accountRepo.addBalance(rows[0].reciver_account_number, rows[0].amount);
-                var p2 = transactionRepo.execute(rows[0].transaction_id);
-                Promise.all([p1, p2])
-                .then(values => {
-                    res.statusCode = 201;
-                    res.json({"message": "Nap tien thanh cong"});
-                })
-                .catch(err => {
-                    res.statusCode = 500;
-                    res.end();
-                });
-            } else if (rows[0].type == 1) {         //chuyen tien
-                var fee = 5000;
-                var addAmount;
-                var subAmount;
-                if (rows[0].payments == 0) {
-                    addAmount = rows[0].amount - fee;
-                    subAmount = rows[0].amount;
-                } else {
-                    addAmount = rows[0].amount;
-                    subAmount = rows[0].amount + fee;
-                }
-
-                accountRepo.getAccountByAccountNumber(rows[0].sender_account_number)
-                .then(acc => {
-                    if (acc[0].balance >= subAmount) {
-                        var p1 = accountRepo.addBalance(rows[0].reciver_account_number, addAmount);
-                        var p2 = accountRepo.subBalance(rows[0].sender_account_number, subAmount);
-                        var p3 = transactionRepo.execute(rows[0].transaction_id);
-                        Promise.all([p1, p2, p3])
-                        .then(values => {
-                            res.statusCode = 201;
-                            res.json({"message": "Chuyen tien thanh cong"});
-                        })
-                        .catch(err => {
-                            res.statusCode = 500;
-                            res.end();
-                        });
-                    } else {
-                        res.statusCode = 202;
-                        res.json({"message": "Tai khoan khong du tien de thuc hien giao dich"});
-                    }
-                })
-                .catch(e => {
-                    res.statusCode = 500;
-                    res.end();
-                });
+            var fee = 5000;
+            var addAmount;
+            var subAmount;
+            if (rows[0].payments == 0) {
+                addAmount = rows[0].amount - fee;
+                subAmount = rows[0].amount;
+            } else {
+                addAmount = rows[0].amount;
+                subAmount = rows[0].amount + fee;
             }
+
+            accountRepo.getAccountByAccountNumber(rows[0].sender_account_number)
+            .then(acc => {
+                if (acc[0].balance >= subAmount) {
+                    var p1 = accountRepo.addBalance(rows[0].reciver_account_number, addAmount);
+                    var p2 = accountRepo.subBalance(rows[0].sender_account_number, subAmount);
+                    var p3 = transactionRepo.execute(rows[0].transaction_id);
+                    Promise.all([p1, p2, p3])
+                    .then(values => {
+                        res.statusCode = 201;
+                        res.json({"message": "Chuyen tien thanh cong"});
+                    })
+                    .catch(err => {
+                        res.statusCode = 500;
+                        res.end();
+                    });
+                } else {
+                    res.statusCode = 202;
+                    res.json({"message": "Tai khoan khong du tien de thuc hien giao dich"});
+                }
+            })
+            .catch(e => {
+                res.statusCode = 500;
+                res.end();
+            });
         } else {
             res.statusCode = 202;
             res.json({"message": "OTP khong chinh xac"});
