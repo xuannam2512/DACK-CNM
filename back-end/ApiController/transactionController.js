@@ -3,6 +3,8 @@ var express = require('express');
 var router = express.Router();
 
 var randomstring = require('randomstring');
+var nodemailer = require('nodemailer');
+
 var transactionRepo = require('../Repos/transactionRepo');
 var transaction_authenRepo = require('../Repos/transaction_authenRepo');
 var accountRepo = require('../Repos/accountRepo');
@@ -138,6 +140,8 @@ async function generate_code() {
         })
 }
 
+
+
 router.post('/code/generate', (req, res) => {
 
     var p = new Promise(function (resolve, reject){
@@ -148,9 +152,48 @@ router.post('/code/generate', (req, res) => {
     p.then(new_code => {
         transaction_authenRepo.create(req.body.transaction_id, new_code)
         .then(rows => {
-            console.log(rows);
+
+            var name = req.body.name;
+            var code = new_code;
+
+            const html = `Dear ${name},
+                <br/>
+                <br/><br/>
+                Here is the code for your transaction:
+                <br/>
+                <b>${code}</b>
+                <br/>
+                This code will expire one minute after this email was sent.
+                <br/><br/>
+                Have a pleasant day.`
+
+            var transporter = nodemailer.createTransport({
+                service: 'Gmail',
+                secure: true,
+                port: 465,
+                auth: {
+                    user: 'xuannam2512@gmail.com',
+                    pass: 'frhojmxzxlfbesar'
+                }
+            });
+            
+            var mailOptions = {
+                from: 'xuannam2512@gmail.com',
+                to: req.body.email,
+                subject: 'OTP for doing transaction',
+                html: html
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+
             res.statusCode = 201;
-            res.json({"code": new_code});
+            res.json({"code": code});
         })
         .catch(error => {
             res.statusCode = 500;
