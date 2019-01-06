@@ -116,7 +116,7 @@ router.post('/', (req, res) => {
 });
 
 // lock a account_number
-router.lock('/', (req, res) => {
+router.post('/lock', (req, res) => {
     if (req.body.account_number === undefined) {
         res.statusCode = 400;
         res.json({

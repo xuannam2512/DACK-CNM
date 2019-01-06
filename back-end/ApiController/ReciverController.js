@@ -4,6 +4,8 @@ var router = express.Router();
 
 //import repos
 var recieverRepo = require('../Repos/recieverRepo');
+var userRepo = require('../Repos/userRepo');
+var accountRepo = require('../Repos/accountRepo');
 
 //get All reciever
 router.get('/', (req, res) => {
@@ -69,17 +71,39 @@ router.get('/:user_id/:account_number', (req, res) => {
 
 //create a account_reciver
 router.post('/', (req, res) => {
-    let recieverEntity = req.body;
+    let recieverEntity = req.body;    
 
-    recieverRepo.createAccountReciever(recieverEntity)
-    .then(data => {
-        res.statusCode = 201;
-        res.json(data);
-    })
-    .catch(err => {
-        res.statusCode = 500;
-        res.json(err);
-    });
+    if(recieverEntity.remider_name == '')
+    {
+        accountRepo.getAccountByAccountNumber(recieverEntity.reciver_account_number)
+        .then(data => { 
+            console.log(data);           
+            return userRepo.getUserById(data[0].user_id)
+        })        
+        .then(data => {            
+            recieverEntity.remider_name = data[0].fullname;
+            return recieverRepo.createAccountReciever(recieverEntity)
+        })
+        .then(data => {
+            console.log("create receiver: " + data);
+            res.statusCode = 201;
+            res.json(data);
+        })
+        .catch(err => {
+            res.statusCode = 500;
+            res.json(err);
+        })
+    } else {
+        recieverRepo.createAccountReciever(recieverEntity)
+        .then(data => {
+            res.statusCode = 201;
+            res.json(data);
+        })
+        .catch(err => {
+            res.statusCode = 500;
+            res.json(err);
+        });
+    }
 });
 
 //update remider name of account reciever

@@ -1,16 +1,27 @@
 import React, { Component } from 'react'
 import { BrowserRouter as Router, Route, Redirect, Switch } from "react-router-dom"
 import { connect } from 'react-redux'
+import axios from 'axios'
 
 //components
 import Account from "./Account/Account"
 import Page from './pages/Page'
 import PageStaff from './Staff/PageStaff'
 
+import { login } from '../actions/index'
+
 const mapStateToProps = state => {
     return { 
         isLogined: state.isLogined,
         permission: state.permission
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        login: loginEntity => {
+            return dispatch(login(loginEntity));
+        } 
     };
 };
 
@@ -45,7 +56,29 @@ class App extends Component {
         if(localStorage.getItem("refresh_token")){
             this.setState({
                 isLogined: true
-            });
+            })
+            let token = localStorage.getItem("refresh_token");
+            axios({
+                method:'get',
+                url: `http://localhost:3000/api/users/token/${token}`,
+            })
+            .then(res => {
+                if(res.status === 200)
+                {
+                    let data = {
+                        user: res.data
+                    }
+                   
+                    this.props.login(data);
+                }
+
+                this.setState({           
+                    permission: this.props.permission
+                })
+            })
+            .catch(err => {
+                console.log(err);
+            })            
         }
     }
 
@@ -53,7 +86,7 @@ class App extends Component {
         return (    
             <Router>
             {
-                !this.state.isLogined
+                !this.props.isLogined
                 ?
                 <Switch>                    
                     <Route path="/login" component={Account}/>
@@ -97,4 +130,4 @@ class App extends Component {
     }
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
