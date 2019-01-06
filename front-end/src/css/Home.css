@@ -183,3 +183,16 @@
 .link-payment:hover {
     text-decoration: none;
 }
+
+.fa-plus-square {
+    font-size: 55px;
+    color: #26BAEE;
+}
+
+.fa-plus-square:hover {
+    color: #0069D9;
+}
+
+.show {
+    opacity: 1;
+}
