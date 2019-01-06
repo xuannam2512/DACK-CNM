@@ -22,9 +22,9 @@ class Footer extends Component {
 
     render() {
         return (
-        <div className="container">
+        <div className="container-fluid">
              {/* Footer */}
-      <footer className="page-footer font-small unique-color-dark" style={{backgroundColor:'#1C2331'}}>
+        <footer className="page-footer font-small unique-color-dark" style={{backgroundColor:'#1C2331'}}>
         <div style={{backgroundColor: '#6351ce'}}>
           <div className="container">
             {/* Grid row*/}
