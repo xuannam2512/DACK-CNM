@@ -71,10 +71,6 @@ class App extends Component {
                    
                     this.props.login(data);
                 }
-
-                this.setState({           
-                    permission: this.props.permission
-                })
             })
             .catch(err => {
                 console.log(err);
@@ -95,7 +91,7 @@ class App extends Component {
                 :
                 <div>
                 {
-                    this.state.permission === 1
+                    this.props.permission === 1
                     ?
                     <div>
                         {
