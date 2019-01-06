@@ -97,7 +97,25 @@ class Home extends Component {
                     this.props.lockAccount(account);
                 })
                 .catch(err => {
-                    console.log(err);
+                    if (err.response.status === 401) {
+                        axios({
+                            method: 'post',
+                            url: `http://localhost:3000/api/authen/accesstoken`,
+                            data: {
+                                refesh_token: localStorage.getItem("refresh_token")
+                            },
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(res => {
+                                localStorage.setItem('access_token', res.data.access_token)
+                                this.deleteAccount();
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    }
                 })
         }
         
@@ -160,7 +178,26 @@ class Home extends Component {
             });
         })
         .catch(err => {
-            console.log(err);
+            if(err.response.status === 401)
+            {
+                axios({
+                    method:'post',
+                    url: `http://localhost:3000/api/authen/accesstoken`,
+                    data: {
+                        refesh_token: localStorage.getItem("refresh_token")
+                    },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    localStorage.setItem('access_token', res.data.access_token)
+                    this.componentDidMount();
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            }
         });
 
         
