@@ -3,4 +3,76 @@
     justify-content: center;
     align-items: center;
     width: 100%;
+    background-color: #FFFFFF;
+    border: solid 1px gainsboro;
+}
+
+.account-reciver {
+    height: 300px;
+    width: 100%;
+    background-color: #FFFFFF;
+    border: solid 1px gainsboro;
+}
+
+.account-reciver-title {
+    padding: 15px;
+    width: 100%;
+    border-bottom: 1px solid gainsboro;
+    background-color: aqua;
+}
+
+.sender-account-title{
+    padding: 20px;
+    font-size: 25px;
+}
+
+.sender-account-number {
+    padding-left: 20px;
+}
+
+.sender-account-balance {
+    padding-left: 20px;
+}
+
+.check-account {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.verify-box {
+    height: 265px;
+    width: 100%;
+    background-color: #FFFFFF;
+    border: solid 1px gainsboro;
+}
+
+.verify-title {
+    padding: 20px;
+    font-size: 25px;
+}
+
+.resend-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.compelete-box {
+    height: 265px;
+    width: 100%;
+    background-color: #FFFFFF;
+    border: solid 1px gainsboro;
+}
+
+.complete-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.complete-sender-account {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
