@@ -3,6 +3,7 @@ import { connect } from "react-redux"
 import NumberFormat from 'react-number-format'
 import Pagination from "react-js-pagination"
 import { Link } from "react-router-dom"
+import axios from 'axios'
 
 //font awesome
 import '../../../../node_modules/font-awesome/css/font-awesome.min.css'
@@ -13,10 +14,23 @@ import '../../../css/Home.css'
 //import image
 import bankLogo from '../../../image/logo2.png'
 
+import { loadReceivers } from '../../actions/index'
+
 
 //map state to props
 const mapStateToProps = state => {
-    return { receivers: state.receivers };
+    return { 
+        receivers: state.receivers,
+        userId: state.userId
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        loadReceivers: receivers => {
+            return dispatch(loadReceivers(receivers));
+        }
+    };
 };
 
 //define
@@ -28,7 +42,7 @@ class Receiver extends Component
         super(props);
 
         this.state = {
-            receivers: props.receivers,
+            receivers: [],
             receiversDisplay: [],
             receiversFilter: [],
             searchString: '',
@@ -60,7 +74,7 @@ class Receiver extends Component
 
         var searchString = e.target.value.trim().toLowerCase();
         if(searchString.length > 0) {
-            receiverList = this.state.receivers.filter(receiver => receiver.remiderName.toLowerCase().match(searchString));            
+            receiverList = this.state.receivers.filter(receiver => receiver.remider_name.toLowerCase().match(searchString));            
             
             this.setState({
                 receiversFilter: receiverList,
@@ -90,10 +104,44 @@ class Receiver extends Component
     }
 
     componentDidMount() {
-        this.setState({
-            receiversDisplay: this.state.receivers.slice(0, NUMBER_OF_ITEM),
-            receiversFilter: this.state.receivers
+        axios({
+            method:'get',
+            url: `http://localhost:3000/api/recievers/users/${this.props.userId}`,
+            headers: {
+                'x-access-token': localStorage.getItem('access_token')
+            }
         })
+        .then(res => {
+            console.log(res);
+            if(res.status === 200)
+            {                
+                this.props.loadReceivers(res.data);
+                this.setState({
+                    receivers: this.props.receivers,
+                    receiversDisplay: this.props.receivers.slice(0, NUMBER_OF_ITEM),
+                    receiversFilter: this.props.receivers,
+                    activePage: 1,
+                    itemsCountPerPage: 1,
+                    totalItemsCount: parseInt(this.props.receivers.length / NUMBER_OF_ITEM) + 1,
+                    pageRangeDisplayed:5    
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            receivers: nextProps.receivers,
+            receiversDisplay: nextProps.receivers.slice(0, NUMBER_OF_ITEM),
+            receiversFilter: nextProps.receivers,
+            activePage: 1,
+            itemsCountPerPage: 1,
+            totalItemsCount: parseInt(nextProps.receivers.length / NUMBER_OF_ITEM) + 1,
+            pageRangeDisplayed:5    
+        });
     }
 
     render() {                    
@@ -107,7 +155,7 @@ class Receiver extends Component
                     <div className="col-md-6">
                         <div className="row mr-0 ml-0 bank-account-number">                         
                             <NumberFormat 
-                            value={receiver.accountNumber}
+                            value={receiver.reciver_account_number}
                             format="#### - #### - ####"
                             className="format-custom"                              
                             />                                                                                                                   
@@ -115,7 +163,7 @@ class Receiver extends Component
                         <div className="row mr-0 ml-0 bank-account-balance">
                             <span className="balance-title">Remider Name:</span>
                             <span>
-                                {receiver.remiderName}
+                                {receiver.remider_name}
                             </span>
                         </div>                                     
                     </div>
@@ -183,4 +231,4 @@ class Receiver extends Component
     }
 }
 
-export default connect(mapStateToProps)(Receiver);
+export default connect(mapStateToProps, mapDispatchToProps)(Receiver);

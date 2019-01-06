@@ -86,7 +86,7 @@ class App extends Component {
         return (    
             <Router>
             {
-                !this.state.isLogined
+                !this.props.isLogined
                 ?
                 <Switch>                    
                     <Route path="/login" component={Account}/>

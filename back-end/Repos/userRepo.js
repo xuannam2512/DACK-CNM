@@ -24,7 +24,7 @@ exports.login = (userEntity) => {
 
 exports.logout = (userId) => {
     //write some code here
-    var sql =  `delete from user_refresh_token where user_id = ${userId}`;
+    var sql =  `delete from users_refresh_token where user_id = ${userId}`;
     return db.excuteQuery(sql);
 }
 
