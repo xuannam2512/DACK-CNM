@@ -4,6 +4,7 @@ var router = express.Router();
 
 var randomstring = require('randomstring');
 var nodemailer = require('nodemailer');
+var moment = require('moment');
 
 var transactionRepo = require('../Repos/transactionRepo');
 var transaction_authenRepo = require('../Repos/transaction_authenRepo');
@@ -21,6 +22,9 @@ router.get('/', (req, res) => {
                     res.statusCode = 204;
                     res.end();
                 } else {
+                    for (var i = 0; i < rows.length; i++) {
+                        rows[i].date = moment(rows[i].date).format('YYYY-MM-DD HH:mm:ss');
+                    }
                     res.statusCode = 201;
                     res.json(rows);
                 }
@@ -43,6 +47,8 @@ router.get('/:id', (req, res) => {
                 res.statusCode = 204;
                 res.end();
             } else {
+                console.log(rows);
+                rows[0].date = moment(rows[0].date).format('YYYY-MM-DD HH:mm:ss');
                 res.statusCode = 201;
                 res.json(rows[0]);
             }
@@ -65,6 +71,11 @@ router.get('/user/:account_number', (req, res) => {
                 res.statusCode = 204;
                 res.end();
             } else {
+                console.log(rows);
+                for (var i = 0; i < rows.length; i++) {
+                    rows[i].date = moment(rows[i].date).format('YYYY-MM-DD HH:mm:ss');
+                }
+                console.log(rows);
                 res.statusCode = 201;
                 res.json(rows);
             }

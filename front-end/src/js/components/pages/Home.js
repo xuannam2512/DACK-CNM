@@ -206,7 +206,7 @@ class Home extends Component {
                         </div>                                     
                     </div>
                     <div className="col-md-5 pr-4 bank-feature">
-                        <Link to="/transaction/history" className="link-payment">
+                        <Link to={`/transaction/history/${account.account_number}`} className="link-payment">
                             <span className="transaction-history"
                             onClick={() => this.viewTransactionHistory()}>
                                 <i className="fa fa-history" aria-hidden="true"></i>
