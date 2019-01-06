@@ -34,7 +34,7 @@ class NavigationBar extends Component
                                     <Link to="/" className="item">HOME</Link>                                
                                 </div>
                                 <div className="col-2 pl-0 pr-0 menu-item">
-                                    <Link to="/about" className="item">ABOUT US</Link>                                
+                                    <Link to="/about" className="item">ABOUT</Link>                                
                                 </div>
                                 <div className="col-2 pl-0 pr-0 menu-item">
                                     <Link to="/account" className="item">ACCOUNT</Link>
