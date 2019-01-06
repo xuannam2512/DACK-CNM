@@ -100,8 +100,26 @@ class AddReceiver extends Component
             this.props.history.push('/receiver');  
         })
         .catch(err => {
-            alert("Account is incorrect!");
-            console.log(err);
+            alert("Account is incorrect or existed!");
+            if (err.response.status === 401) {
+                axios({
+                    method: 'post',
+                    url: `http://localhost:3000/api/authen/accesstoken`,
+                    data: {
+                        refesh_token: localStorage.getItem("refresh_token")
+                    },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(res => {
+                        localStorage.setItem('access_token', res.data.access_token)
+                        this.handleAddReceiver();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
         })        
     }
 
