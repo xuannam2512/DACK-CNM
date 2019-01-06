@@ -59,7 +59,6 @@
 }
 
 .compelete-box {
-    height: 265px;
     width: 100%;
     background-color: #FFFFFF;
     border: solid 1px gainsboro;
@@ -84,4 +83,9 @@
 
 .fa-plus-square:hover {
     color: #0069D9;
+}
+
+.sender-account-complete {
+    border: none;
+    background: none;
 }

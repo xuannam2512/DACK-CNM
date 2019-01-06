@@ -102,7 +102,7 @@ router.post('/', (req, res) => {
         var subAmount = req.body.amount;
         var fee = 5000;
         if (req.body.payments == 1){
-            subAmount = subAmount + fee;
+            subAmount = parseInt(subAmount) + parseInt(fee);
         }
 
         accountRepo.getAccountByAccountNumber(req.body.sender_account_number)

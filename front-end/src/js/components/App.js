@@ -9,10 +9,8 @@ import PageStaff from './Staff/PageStaff'
 
 const mapStateToProps = state => {
     return { 
-        //isLogined: state.isLogined,
-        //permission: state.permission
-        isLogined: true,
-        permission: 0
+        isLogined: state.isLogined,
+        permission: state.permission
     };
 };
 
@@ -22,8 +20,8 @@ class App extends Component {
         super(props);
 
         this.state = {
-            isLogined: true,
-            permission: 3
+            isLogined: props.isLogined,
+            permission: props.permission
         }
     }
 
