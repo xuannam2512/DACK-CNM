@@ -3,7 +3,9 @@ const initState = {
     userId: '',
     permission: 1,
     receivers:[],
-    accounts: []
+    accounts: [],
+    transactions: [],
+    transaction: []
 }
 
 const rootReducer = (state = initState, action) => {
@@ -23,6 +25,22 @@ const rootReducer = (state = initState, action) => {
             return {
                 ...state,
                 accounts: action.payload
+            }
+        }
+        case 'LOAD_TRANSACTIONS':
+        {
+            console.log(action.payload);
+            return {
+                ...state,
+                transactions: action.payload
+            }
+        }
+        case 'LOAD_TRANSACTION_BY_ID':
+        {
+            console.log(action.payload);
+            return {
+                ...state,
+                transaction: action.payload
             }
         }
         default:
