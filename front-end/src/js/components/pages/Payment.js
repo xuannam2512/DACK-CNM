@@ -8,7 +8,12 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import classNames from 'classnames';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { withRouter } from "react-router-dom"
+import { withRouter } from "react-router-dom";
+import InputMask from 'react-input-mask';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import axios from 'axios'
+import NumberFormat from 'react-number-format'
 
 //import Typography from '@material-ui/core/Typography';
 
@@ -32,21 +37,6 @@ function getSteps() {
     return ['Account sender', 'Account receiver and amount', 'Verify', 'Complete'];
 }
 
-// function getStepContent(stepIndex) {
-//     switch (stepIndex) {
-//         case 0:
-//             return 'Account sender';
-//         case 1:
-//             return 'Account receiver';
-//         case 2:
-//             return 'Verify';
-//         case 3: 
-//             return 'Complete';
-//         default:
-//             return 'Uknown stepIndex';
-//     }
-// }
-
 class Payment extends Component {
 
     constructor() {
@@ -57,48 +47,134 @@ class Payment extends Component {
             isCheckAccount: true,
             accountNumber: "",
             code: "",
-            money: 0
+            money: '',
+            fullname: "",
+            phone: "",
+            email: "",
+            isReceiverPay: false,
+            senderAccount: "",
+            transactionId: 0
         }
 
         this.onchangeAccountNumber = this.onchangeAccountNumber.bind(this);
         this.handleChangeCode = this.handleChangeCode.bind(this);
+        this.handleCheckAccount = this.handleCheckAccount.bind(this);
+        this.handleOnchangePhone = this.handleOnchangePhone.bind(this);
+        this.handleOnChangeFullname = this.handleOnChangeFullname.bind(this);
     }
 
     handleNext = () => {        
+        
+        if (this.state.activeStep + 1 === 2) {
+            let receiverAccount = this.state.accountNumber.replace("-", '');
+            receiverAccount = receiverAccount.replace("-", '');
+            receiverAccount = receiverAccount.replace("-", '');
+
+            axios({
+                method: 'post',
+                url: `http://localhost:3000/api/transactions`,
+                data: {
+                    payments: this.state.isReceiverPay ? 0 : 1,
+                    sender_account_number: this.state.senderAccount,
+                    reciver_account_number: receiverAccount,
+                    amount: this.state.money,
+                    type: 1
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpbeyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6InRlc3QyIiwiZnVsbG5hbWUiOiJMw6ogWHXDom4gTmFtIiwicGhvbmUiOiIwMTIzNDU2Nzg5IiwiZW1haWwiOiJ4dWFubmFtMjUxMkBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwicGVybWlzc2lvbiI6MH1dLCJpYXQiOjE1NDY3ODMyNzMsImV4cCI6MTU0Njc4Njg3M30.8hRBMEwod0WzwExeSxm0YXjmVNdCZY8pH62xezz_NEo'
+                }
+            })
+                .then(res => {
+                    console.log(res);
+                    if (res.status === 202) {
+                        alert("Your account is not enough money")
+                    }
+
+                    if (res.status === 201) {
+                        this.setState({
+                            transactionId: res.data.insertId
+                        });
+
+                        axios({
+                            method: 'post',
+                            url: `http://localhost:3000/api/transactions/code/generate`,
+                            data: {
+                                transaction_id: res.data.insertId,
+                                email: this.state.email,
+                                name: this.state.fullname
+                            },
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpbeyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6InRlc3QyIiwiZnVsbG5hbWUiOiJMw6ogWHXDom4gTmFtIiwicGhvbmUiOiIwMTIzNDU2Nzg5IiwiZW1haWwiOiJ4dWFubmFtMjUxMkBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwicGVybWlzc2lvbiI6MH1dLCJpYXQiOjE1NDY3ODMyNzMsImV4cCI6MTU0Njc4Njg3M30.8hRBMEwod0WzwExeSxm0YXjmVNdCZY8pH62xezz_NEo'
+                            }
+                        })
+                            .then(res => {
+                                if (res.status === 201) {
+                                    this.setState(state => ({
+                                        activeStep: state.activeStep + 1,
+                                    }));
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    }
+
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
+
+        if(this.state.activeStep + 1 === 3)
+        {
+            if(this.state.code === '')
+            {
+                alert("Code is empty!");
+            } else {
+                axios({
+                    method:'post',
+                    url: `http://localhost:3000/api/transactions/code/verify`,
+                    data: {
+                        transaction_id: this.state.transactionId,
+	                    code: this.state.code
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpbeyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6InRlc3QyIiwiZnVsbG5hbWUiOiJMw6ogWHXDom4gTmFtIiwicGhvbmUiOiIwMTIzNDU2Nzg5IiwiZW1haWwiOiJ4dWFubmFtMjUxMkBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwicGVybWlzc2lvbiI6MH1dLCJpYXQiOjE1NDY3ODMyNzMsImV4cCI6MTU0Njc4Njg3M30.8hRBMEwod0WzwExeSxm0YXjmVNdCZY8pH62xezz_NEo'
+                    }
+                })
+                .then(res => {
+                    if(res.status === 201)
+                    {
+                        this.setState(state => ({
+                            activeStep: state.activeStep + 1,
+                        }))
+                    }
+                    if(res.status === 202)
+                    {
+                        alert("Code is incorrect!!");
+                    }
+                })
+                .catch(err => {
+
+                })
+            }
+
+        }
+
         if(this.state.activeStep + 1 === 4)
         {
             alert("complete!!");
             this.props.history.push('/');
         }
-        this.setState(state => ({
-            activeStep: state.activeStep + 1,
-        }));
     };
 
     onchangeAccountNumber = (e) => {     
-        let str = "";
-        let strNumber = "1234567890"
-        if(this.state.accountNumber.length < e.target.value.length)
-        {
-            str = e.target.value;
-
-            if (str.length === 4 || str.length === 11 || str.length === 18) {
-                str = str + " - ";
-                this.setState({
-                    accountNumber: str
-                });
-            }
-
-            if (strNumber.includes(str.charAt(str.length - 1)) && str.length <= 25) {
-                this.setState({
-                    accountNumber: str
-                });
-            }
-        } else {            
-            this.setState({
-                accountNumber: e.target.value
-            })
-        }
+        this.setState({
+            accountNumber: e.target.value
+        });
     }
 
     handleChangeCode = (e) => {
@@ -117,6 +193,65 @@ class Payment extends Component {
         this.setState({
             money: ""
         })
+    }
+
+    handleOnChangeFullname = (e) => {
+        this.setState({
+            fullname: e.target.value
+        })
+    }
+
+    handleOnchangePhone = (e) => {
+        this.setState({
+            phone: e.target.value
+        })
+    }
+
+    handleCheckAccount = () => {
+        let accountNumber = this.state.accountNumber.replace("-", '');
+        accountNumber = accountNumber.replace("-", '');
+        accountNumber = accountNumber.replace("-", '');
+
+        axios({
+            method:'get',
+            url: `http://localhost:3000/api/users/account/${accountNumber}`,
+            headers: {
+                'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpbeyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6InRlc3QyIiwiZnVsbG5hbWUiOiJMw6ogWHXDom4gTmFtIiwicGhvbmUiOiIwMTIzNDU2Nzg5IiwiZW1haWwiOiJ4dWFubmFtMjUxMkBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwicGVybWlzc2lvbiI6MH1dLCJpYXQiOjE1NDY3ODMyNzMsImV4cCI6MTU0Njc4Njg3M30.8hRBMEwod0WzwExeSxm0YXjmVNdCZY8pH62xezz_NEo'
+            }
+        })
+        .then(res => {
+            this.setState({
+                fullname: res.data.fullname,
+                phone: res.data.phone,
+                email: res.data.email
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
+    handleOnCheck = (index) => {
+        console.log(index);
+        if(index === 1)
+        {
+            this.setState({
+                isReceiverPay: !this.state.isReceiverPay
+            })
+        }
+
+        if(index === 2)
+        {
+            this.setState({
+                isReceiverPay: !this.state.isReceiverPay
+            })
+        }
+    }
+
+    componentDidMount() {
+        this.setState({
+            senderAccount: this.props.match.params.accountNumber
+        });
     }
 
     render() {
@@ -144,10 +279,14 @@ class Payment extends Component {
                             <div className="col-6 pl-0 pr-0 border-right">
                                 <div className="row mr-0 ml-0 sender-account-title">
                                     Input account number
-                        </div>
+                            </div>
                                 <div className="row mr-0 ml-0 sender-account-number">
                                     <div className="col-9 pl-0">
-                                        <TextField
+                                    <InputMask {...this.props} mask="999-999-999-999" maskChar="-" 
+                                        onChange={this.onchangeAccountNumber}
+                                        value={this.state.accountNumber}
+                                    >
+                                        {() => <TextField
                                             id="outlined-email-input"
                                             label="Account Number"
                                             className={classes.textField}
@@ -155,13 +294,16 @@ class Payment extends Component {
                                             name="account-number"
                                             margin="normal"
                                             variant="outlined"
-                                            fullWidth
-                                            onChange={this.onchangeAccountNumber}
-                                            value={this.state.accountNumber}
-                                        />
+                                            fullWidth                                            
+                                        />}
+                                    </InputMask>                                        
                                     </div>
                                     <div className="col-3 check-account">
-                                        <Button variant="contained" color="primary" className={classes.button}>
+                                        <Button variant="contained" 
+                                        color="primary" 
+                                        className={classes.button}
+                                        onClick={() => {this.handleCheckAccount()}}
+                                        >
                                             Check
                                         </Button>
                                     </div>
@@ -174,26 +316,28 @@ class Payment extends Component {
                                                 <TextField
                                                     id="standard-read-only-input"
                                                     label="Full name"
-                                                    defaultValue="Le Xuan Nam"
+                                                    value={this.state.fullname}
                                                     className={classes.textField}
                                                     margin="normal"
                                                     InputProps={{
                                                         readOnly: true,
                                                     }}
                                                     fullWidth
+                                                    onChange={this.handleOnChangeFullname}
                                                 />
                                             </div>
                                             <div className="col-6 pl-0 pr-5">
                                                 <TextField
                                                     id="standard-read-only-input"
                                                     label="Phone"
-                                                    defaultValue="0346847957"
+                                                    value={this.state.phone}
                                                     className={classes.textField}
                                                     margin="normal"
                                                     InputProps={{
                                                         readOnly: true,
                                                     }}
                                                     fullWidth
+                                                    onChange={this.handleOnChangePhone}
                                                 />
                                             </div>
                                         </div>
@@ -204,8 +348,8 @@ class Payment extends Component {
                             <div className="col-6">
                                 <div className="row mr-0 ml-0 sender-account-title">
                                     Input amount
-                        </div>
-                                <div className="row pl-3 pr-3 mt-4">
+                            </div>
+                                <div className="row pl-3 pr-3 mt-0">   
                                     <TextField
                                         label="Money"
                                         id="simple-start-adornment"
@@ -216,11 +360,36 @@ class Payment extends Component {
                                         }}
                                         fullWidth
                                         value={this.state.money}
-                                        onChange={this.handleChangeMoney}
-                                        onClick={this.handleClickMoney}
-                                    />
+                                        onChange={this.handleChangeMoney}                                        
+                                    />                                                                   
                                 </div>
-                                <div className="row float-right pr-3 pl-3 mt-5 pt-5">
+                                <div className="row mt-4">
+                                    <div className="col-6">
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={this.state.isReceiverPay}
+                                                    onClick={() => {this.handleOnCheck(1)}}                                                    
+                                                    color="primary"
+                                                />
+                                            }
+                                            label="Receiver Pay"
+                                        />
+                                    </div>
+                                    <div className="col-6">
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    checked={!this.state.isReceiverPay}
+                                                    onClick={() => {this.handleOnCheck(2)}}                                                    
+                                                    color="primary"
+                                                />
+                                            }
+                                            label="Sender Pay"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="row float-right pr-3 pl-3 pt-5">
                                     <Button variant="contained" color="primary" onClick={this.handleNext}>
                                         {activeStep === steps.length - 1 ? "Finish" : "Next"}
                                     </Button>
@@ -270,18 +439,23 @@ class Payment extends Component {
                                     <h1>COMPLETE!!!</h1>
                                 </div>
                                 <div className="row complete-sender-account mt-3">
-                                    <b className="mr-2">Sender Account: </b> 1234 - 5678 - 1234 - 1234
+                                    <b className="mr-2">Sender Account: </b> 
+                                    <NumberFormat
+                                        value={this.state.senderAccount}
+                                        format="###-###-###-###"
+                                        className="sender-account-complete"
+                                    ></NumberFormat>
                                 </div>
                                 <div className="row complete-sender-account mt-3">
-                                    <b className="mr-2">Reciever Account:</b>  1234 - 5678 - 1234 - 1234
+                                    <b className="mr-2">Reciever Account:</b>  {this.state.accountNumber}
                                 </div>
                                 <div className="row complete-sender-account mt-3">
-                                    <b className="mr-2">Reciever Name:</b>  Le Xuan Nam
+                                    <b className="mr-2">Reciever Name:</b>  {this.state.fullname}
                                 </div>
                                 <div className="row complete-sender-account mt-3">
-                                    <b className="mr-2">Amount:</b>  1.000.000 đ
+                                    <b className="mr-2">Amount:</b>  {this.state.money} đ
                                 </div>
-                                <div className="row float-right pl-3 pr-5 mt-5">
+                                <div className="row float-right pl-3 pr-5 mt-5 mb-3">
                                     <Button variant="contained" color="primary" onClick={this.handleNext}>
                                         {activeStep === steps.length - 1 ? "Finish" : "Next"}
                                     </Button>

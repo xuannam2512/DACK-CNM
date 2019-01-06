@@ -3,6 +3,7 @@ import { connect } from "react-redux"
 import NumberFormat from 'react-number-format'
 import Pagination from "react-js-pagination"
 import { Link } from "react-router-dom"
+import axios from 'axios'
 
 //font awesome
 import '../../../../node_modules/font-awesome/css/font-awesome.min.css'
@@ -13,10 +14,23 @@ import '../../../css/Home.css'
 //import image
 import bankLogo from '../../../image/logo2.png'
 
+//import action
+import { loadAccounts } from '../../actions/index'
+
 
 //map state to props
 const mapStateToProps = state => {
-    return { accounts: state.accounts };
+    return { 
+        accounts: state.accounts
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        loadAccounts: accounts => {
+            return dispatch(loadAccounts(accounts));
+        } 
+    };
 };
 
 //define
@@ -27,14 +41,14 @@ class Home extends Component {
         super(props);
 
         this.state = {
-            accounts: props.accounts,
+            accounts: [],
             accountsDisplay: [],
             accountsFilter: [],
             searchString: '',
             activePage: 1,
             itemsCountPerPage: 1,
             totalItemsCount: parseInt(props.accounts.length / NUMBER_OF_ITEM) + 1,
-            pageRangeDisplayed:5
+            pageRangeDisplayed:5,
         }
 
         this.transferMoney = this.transferMoney.bind(this);
@@ -67,7 +81,7 @@ class Home extends Component {
 
         var searchString = e.target.value.trim().toLowerCase();
         if(searchString.length > 0) {
-            accountList = this.state.accounts.filter(account => account.accountNumber.toLowerCase().match(searchString));            
+            accountList = this.state.accounts.filter(account => account.account_number.toLowerCase().match(searchString));            
             
             this.setState({
                 accountsFilter: accountList,
@@ -92,10 +106,38 @@ class Home extends Component {
         });
     }  
 
-    componentDidMount() {
+    componentDidMount() {        
+        //call api to load accounts
+        axios({
+            method:'get',
+            url: `http://localhost:3000/api/accounts`,
+            headers: {
+                'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpbeyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6InRlc3QyIiwiZnVsbG5hbWUiOiJMw6ogWHXDom4gTmFtIiwicGhvbmUiOiIwMTIzNDU2Nzg5IiwiZW1haWwiOiJ4dWFubmFtMjUxMkBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwicGVybWlzc2lvbiI6MH1dLCJpYXQiOjE1NDY3ODMyNzMsImV4cCI6MTU0Njc4Njg3M30.8hRBMEwod0WzwExeSxm0YXjmVNdCZY8pH62xezz_NEo'
+            }
+        })
+        .then(res => {
+            
+            this.props.loadAccounts(res.data.filter(account => account.status === 1));
+            this.setState({
+                accounts: this.props.accounts,
+                accountsDisplay: this.props.accounts.slice(0, NUMBER_OF_ITEM),
+                accountsFilter: this.props.accounts,
+                activePage: 1,
+                itemsCountPerPage: 1,
+                totalItemsCount: parseInt(this.props.accounts.length / NUMBER_OF_ITEM) + 1,
+                pageRangeDisplayed:5,   
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
+        
+    }
+
+    componentWillReceiveProps(nextProps) {
         this.setState({
-            accountsDisplay: this.state.accounts.slice(0, NUMBER_OF_ITEM),
-            accountsFilter: this.state.accounts
+            accounts: nextProps.accounts
         })
     }
 
@@ -110,7 +152,7 @@ class Home extends Component {
                     <div className="col-md-6">
                         <div className="row mr-0 ml-0 bank-account-number">                         
                             <NumberFormat 
-                            value={account.accountNumber}
+                            value={account.account_number}
                             format="#### - #### - ####"
                             className="format-custom"                              
                             />                                                                                                                   
@@ -195,4 +237,4 @@ class Home extends Component {
     }
 }
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

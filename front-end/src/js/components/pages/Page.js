@@ -34,7 +34,7 @@ class Page extends Component {
                         <Switch>
                             <Route exact path="/" component={Home} />                                                       
                             <Route path="/about" component={About} />
-                            <Route path="/payment" component={Payment} />
+                            <Route path="/payment/:accountNumber" component={Payment} />
                             <Route path="/account" component={Home} />
                             <Route path="/receiver/add" component={AddReceiver} />
                             <Route path="/receiver" component={Receiver} />                            
