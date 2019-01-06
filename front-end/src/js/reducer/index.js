@@ -64,6 +64,24 @@ const rootReducer = (state = initState, action) => {
                 transaction: action.payload
             }
         }
+        case 'LOAD_RECEIVERS':
+        {
+            console.log(action.payload);
+            return {
+                ...state,
+                receivers: action.payload
+            }
+        }
+        case 'ADD_RECEIVERS':
+        {
+            console.log(action.payload);
+            return {
+                ...state,
+                receivers: state.receivers.push(action.payload)
+            }
+        }
+
+        
         default:
             return state;
     }
