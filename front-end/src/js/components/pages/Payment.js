@@ -13,7 +13,7 @@ import { withRouter } from "react-router-dom"
 //import Typography from '@material-ui/core/Typography';
 
 //import CSS
-import '../../../css/payment.css'
+import '../../../css/Payment.css'
 
 const styles = theme => ({
     root: {
