@@ -3,6 +3,7 @@ const initState = {
     userId: '',
     refreshToken: '',
     accessToken: '',
+    permission: 1,
     receivers:[
         {
             accountNumber: '123456789123',
