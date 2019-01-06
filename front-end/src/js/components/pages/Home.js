@@ -44,7 +44,11 @@ class Home extends Component {
 
     transferMoney = () => {
         alert("Transfer money");
-    }    
+    }
+
+    viewTransactionHistory = () => {
+        alert("View transaction history");
+    }
 
     searchAccount = () => {
         alert("Searching...");
@@ -123,12 +127,18 @@ class Home extends Component {
                         </div>                                     
                     </div>
                     <div className="col-md-5 pr-4 bank-feature">
+                        <Link to="/transaction/history" className="link-payment">
+                            <span className="transaction-history"
+                            onClick={() => this.viewTransactionHistory()}>
+                                <i className="fa fa-history" aria-hidden="true"></i>
+                            </span>
+                        </Link>
                         <Link to="/payment" className="link-payment">
                             <span className="transfer"
                             onClick={() => this.transferMoney()}>
                                 <i className="fa fa-arrow-circle-right" aria-hidden="true"></i>
                             </span>
-                        </Link>                                                            
+                        </Link>
                         
                         <span className="delete"
                         onClick={() => this.deleteAccount()}>
