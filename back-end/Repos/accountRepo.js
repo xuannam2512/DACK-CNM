@@ -47,8 +47,18 @@ exports.unlockAccountByAccountNumber = account_number => {
 exports.create = (accountEntity) => {
     
     var date =  moment().format('YYYY-MM-DD HH:mm:ss');
-    var sql =  ` INSERT INTO account (account_number, user_id, balance, date, status) VALUES
-     ('${accountEntity.account_number}','${accountEntity.user_id}',${accountEntity.balance},'${date}', ${accountEntity.status}) `;
+    var sql =  ` INSERT INTO account (account_number, user_id, balance, date) VALUES
+     ('${accountEntity.account_number}','${accountEntity.user_id}',${accountEntity.balance},'${date}') `;
 
+    return db.excuteQuery(sql);
+}
+
+exports.addBalance = (account_number, amount) => {
+    var sql = `update account set balance = balance + ${amount} where account_number = ${account_number}`;
+    return db.excuteQuery(sql);
+}
+
+exports.subBalance = (account_number, amount) => {
+    var sql = `update account set balance = balance - ${amount} where account_number = ${account_number}`;
     return db.excuteQuery(sql);
 }
