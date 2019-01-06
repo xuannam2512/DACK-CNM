@@ -112,7 +112,7 @@ class Home extends Component {
             method:'get',
             url: `http://localhost:3000/api/accounts`,
             headers: {
-                'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpbeyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6InRlc3QyIiwiZnVsbG5hbWUiOiJMw6ogWHXDom4gTmFtIiwicGhvbmUiOiIwMTIzNDU2Nzg5IiwiZW1haWwiOiJ4dWFubmFtMjUxMkBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwicGVybWlzc2lvbiI6MH1dLCJpYXQiOjE1NDY3ODMyNzMsImV4cCI6MTU0Njc4Njg3M30.8hRBMEwod0WzwExeSxm0YXjmVNdCZY8pH62xezz_NEo'
+                'x-access-token': localStorage.getItem('access_token')
             }
         })
         .then(res => {
@@ -175,7 +175,7 @@ class Home extends Component {
                                 <i className="fa fa-history" aria-hidden="true"></i>
                             </span>
                         </Link>
-                        <Link to="/payment" className="link-payment">
+                        <Link to={`/payment/${account.account_number}`} className="link-payment">
                             <span className="transfer"
                             onClick={() => this.transferMoney()}>
                                 <i className="fa fa-arrow-circle-right" aria-hidden="true"></i>

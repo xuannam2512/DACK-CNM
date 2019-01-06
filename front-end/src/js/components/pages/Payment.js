@@ -70,61 +70,66 @@ class Payment extends Component {
             receiverAccount = receiverAccount.replace("-", '');
             receiverAccount = receiverAccount.replace("-", '');
 
-            axios({
-                method: 'post',
-                url: `http://localhost:3000/api/transactions`,
-                data: {
-                    payments: this.state.isReceiverPay ? 0 : 1,
-                    sender_account_number: this.state.senderAccount,
-                    reciver_account_number: receiverAccount,
-                    amount: this.state.money,
-                    type: 1
-                },
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpbeyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6InRlc3QyIiwiZnVsbG5hbWUiOiJMw6ogWHXDom4gTmFtIiwicGhvbmUiOiIwMTIzNDU2Nzg5IiwiZW1haWwiOiJ4dWFubmFtMjUxMkBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwicGVybWlzc2lvbiI6MH1dLCJpYXQiOjE1NDY3ODMyNzMsImV4cCI6MTU0Njc4Njg3M30.8hRBMEwod0WzwExeSxm0YXjmVNdCZY8pH62xezz_NEo'
-                }
-            })
-                .then(res => {
-                    console.log(res);
-                    if (res.status === 202) {
-                        alert("Your account is not enough money")
+            if(this.state.accountNumber === '' || this.state.money === '')
+            {
+                alert("You didn't enter accout number or amount.");
+            } else {
+                axios({
+                    method: 'post',
+                    url: `http://localhost:3000/api/transactions`,
+                    data: {
+                        payments: this.state.isReceiverPay ? 0 : 1,
+                        sender_account_number: this.state.senderAccount,
+                        reciver_account_number: receiverAccount,
+                        amount: this.state.money,
+                        type: 1
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-access-token': localStorage.getItem('access_token')
                     }
+                })
+                    .then(res => {
+                        console.log(res);
+                        if (res.status === 202) {
+                            alert("Your account is not enough money")
+                        }
 
-                    if (res.status === 201) {
-                        this.setState({
-                            transactionId: res.data.insertId
-                        });
+                        if (res.status === 201) {
+                            this.setState({
+                                transactionId: res.data.insertId
+                            });
 
-                        axios({
-                            method: 'post',
-                            url: `http://localhost:3000/api/transactions/code/generate`,
-                            data: {
-                                transaction_id: res.data.insertId,
-                                email: this.state.email,
-                                name: this.state.fullname
-                            },
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpbeyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6InRlc3QyIiwiZnVsbG5hbWUiOiJMw6ogWHXDom4gTmFtIiwicGhvbmUiOiIwMTIzNDU2Nzg5IiwiZW1haWwiOiJ4dWFubmFtMjUxMkBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwicGVybWlzc2lvbiI6MH1dLCJpYXQiOjE1NDY3ODMyNzMsImV4cCI6MTU0Njc4Njg3M30.8hRBMEwod0WzwExeSxm0YXjmVNdCZY8pH62xezz_NEo'
-                            }
-                        })
-                            .then(res => {
-                                if (res.status === 201) {
-                                    this.setState(state => ({
-                                        activeStep: state.activeStep + 1,
-                                    }));
+                            axios({
+                                method: 'post',
+                                url: `http://localhost:3000/api/transactions/code/generate`,
+                                data: {
+                                    transaction_id: res.data.insertId,
+                                    email: this.state.email,
+                                    name: this.state.fullname
+                                },
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'x-access-token': localStorage.getItem('access_token')
                                 }
                             })
-                            .catch(err => {
-                                console.log(err);
-                            })
-                    }
+                                .then(res => {
+                                    if (res.status === 201) {
+                                        this.setState(state => ({
+                                            activeStep: state.activeStep + 1,
+                                        }));
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                })
+                        }
 
-                })
-                .catch(err => {
-                    console.log(err);
-                })
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
         }
 
         if(this.state.activeStep + 1 === 3)
@@ -142,7 +147,7 @@ class Payment extends Component {
                     },
                     headers: {
                         'Content-Type': 'application/json',
-                        'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpbeyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6InRlc3QyIiwiZnVsbG5hbWUiOiJMw6ogWHXDom4gTmFtIiwicGhvbmUiOiIwMTIzNDU2Nzg5IiwiZW1haWwiOiJ4dWFubmFtMjUxMkBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwicGVybWlzc2lvbiI6MH1dLCJpYXQiOjE1NDY3ODMyNzMsImV4cCI6MTU0Njc4Njg3M30.8hRBMEwod0WzwExeSxm0YXjmVNdCZY8pH62xezz_NEo'
+                        'x-access-token': localStorage.getItem('access_token')
                     }
                 })
                 .then(res => {
@@ -216,7 +221,7 @@ class Payment extends Component {
             method:'get',
             url: `http://localhost:3000/api/users/account/${accountNumber}`,
             headers: {
-                'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjpbeyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6InRlc3QyIiwiZnVsbG5hbWUiOiJMw6ogWHXDom4gTmFtIiwicGhvbmUiOiIwMTIzNDU2Nzg5IiwiZW1haWwiOiJ4dWFubmFtMjUxMkBnbWFpbC5jb20iLCJwYXNzd29yZCI6ImUxMGFkYzM5NDliYTU5YWJiZTU2ZTA1N2YyMGY4ODNlIiwicGVybWlzc2lvbiI6MH1dLCJpYXQiOjE1NDY3ODMyNzMsImV4cCI6MTU0Njc4Njg3M30.8hRBMEwod0WzwExeSxm0YXjmVNdCZY8pH62xezz_NEo'
+                'x-access-token': localStorage.getItem('access_token')
             }
         })
         .then(res => {
