@@ -5,11 +5,14 @@ import { connect } from 'react-redux'
 //components
 import Account from "./Account/Account"
 import Page from './pages/Page'
+import PageStaff from './Staff/PageStaff'
 
 const mapStateToProps = state => {
     return { 
-        isLogined: state.isLogined,
-        permission: state.permission
+        //isLogined: state.isLogined,
+        //permission: state.permission
+        isLogined: true,
+        permission: 0
     };
 };
 
@@ -19,8 +22,8 @@ class App extends Component {
         super(props);
 
         this.state = {
-            isLogined: props.isLogined,
-            permission: props.permission
+            isLogined: true,
+            permission: 3
         }
     }
 
@@ -77,10 +80,19 @@ class App extends Component {
                     </div>
                     :
                     <div>
-                        {/* staff */}
+                        {
+                            // window.location.href.trim().includes('/login')
+                            //     ?
+                            //     <div>
+                            //         <Redirect to="/" />
+                            //         <Route path="/" component={PageStaff} />
+                            //     </div>
+                            //     :
+                                <Route path="/" component={PageStaff} />
+                        }
                     </div> 
                 }                    
-                </div>                                                 
+                </div>                                              
             }                              
             </Router>                    
         )
