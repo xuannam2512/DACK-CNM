@@ -3,6 +3,40 @@ const initState = {
     userId: '',
     refreshToken: '',
     accessToken: '',
+    receivers:[
+        {
+            accountNumber: '123456789123',
+            remiderName: 'Test 1'
+        },
+        {
+            accountNumber: '123456789123',
+            remiderName: 'Test 2'
+        },
+        {
+            accountNumber: '123456789123',
+            remiderName: 'Test 3'
+        },
+        {
+            accountNumber: '123456789123',
+            remiderName: 'Test 4'
+        },
+        {
+            accountNumber: '123456789123',
+            remiderName: 'Test 5'
+        },
+        {
+            accountNumber: '123456789123',
+            remiderName: 'Test 6'
+        },
+        {
+            accountNumber: '123456789123',
+            remiderName: 'Test 7'
+        },
+        {
+            accountNumber: '123456789123',
+            remiderName: 'Test 8'
+        }
+    ],
     accounts: [
         {
             accountNumber: '795866789123',

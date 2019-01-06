@@ -6,6 +6,8 @@ import { Route, Switch } from "react-router-dom"
 import NavigationBar from './NaviagtionBar'
 import Home from './Home'
 import Payment from './Payment'
+import Receiver from './Receiver'
+import AddReceiver from './AddReceiver'
 
 //import css
 import '../../../css/page.css'
@@ -31,6 +33,9 @@ class Page extends Component {
                             <Route exact path="/" component={Home} />                                                       
                             <Route path="/about" component={About} />
                             <Route path="/payment" component={Payment} />
+                            <Route path="/account" component={Home} />
+                            <Route path="/receiver/add" component={AddReceiver} />
+                            <Route path="/receiver" component={Receiver} />                            
                             <Route component={ErrorPage} />                            
                         </Switch>                            
                     </div>

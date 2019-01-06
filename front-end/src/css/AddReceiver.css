@@ -1,0 +1,13 @@
+.add-receiver-box {
+    padding: 50px;
+    padding-left: 50px !important;
+    padding-right: 50px !important;
+}
+
+.add-receiver-title {
+    color: #000000;
+    font-weight: bold;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}

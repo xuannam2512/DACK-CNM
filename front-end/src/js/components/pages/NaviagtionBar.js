@@ -40,7 +40,7 @@ class NavigationBar extends Component
                                     <Link to="/account" className="item">ACCOUNT</Link>
                                 </div>
                                 <div className="col-2 pl-0 pr-0 menu-item">
-                                    <Link to="/reciever" className="item">RECEIVER</Link>
+                                    <Link to="/receiver" className="item">RECEIVER</Link>
                                 </div>
                                 <div className="col-2 pl-0 pr-0 menu-item">
                                     <Link to="/contact" className="item">CONTACT</Link>

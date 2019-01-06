@@ -76,3 +76,12 @@
     justify-content: center;
     align-items: center;
 }
+
+.fa-plus-square {
+    font-size: 55px;
+    color: #26BAEE;
+}
+
+.fa-plus-square:hover {
+    color: #0069D9;
+}
