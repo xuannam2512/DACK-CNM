@@ -34,6 +34,15 @@ exports.getUserById = (userId) => {
     return db.excuteQuery(sql);
 }
 
+//get user by token
+exports.getUserByToken = token => {
+    var sql = `SELECT * ` +
+    `FROM dackcnm.users u join dackcnm.users_refresh_token urt on urt.user_id = u.user_id ` + 
+    `where urt.refresh_token like '${token}'`;
+
+    return db.excuteQuery(sql);
+}
+
 exports.loadAllReciversFlowId = (userId) => {
     //write some code here
     var sql =  `SELECT * FROM dackcnm.account_recivers where user_id = ${userId}`;

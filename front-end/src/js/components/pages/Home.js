@@ -21,7 +21,8 @@ import { loadAccounts } from '../../actions/index'
 //map state to props
 const mapStateToProps = state => {
     return { 
-        accounts: state.accounts
+        accounts: state.accounts,
+        userId: state.userId
     };
 };
 
@@ -110,7 +111,7 @@ class Home extends Component {
         //call api to load accounts
         axios({
             method:'get',
-            url: `http://localhost:3000/api/accounts`,
+            url: `http://localhost:3000/api/accounts/users/${this.props.userId}`,
             headers: {
                 'x-access-token': localStorage.getItem('access_token')
             }
