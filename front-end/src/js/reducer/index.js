@@ -41,14 +41,19 @@ const initState = {
             accountNumber: '775692189123',
             balance: 18000000
         }
-    ]
+    ],
+    xuser: 'hai',
+    xfullname: 'dinhvantuanhai',
+    xphone: '0981823112',
+    xmail: 'toihocly@gmail.com',
+    xpassword: 'aloha'
 }
 
 const rootReducer = (state = initState, action) => {
     switch (action.type) {
         case 'LOGIN': 
         {
-            return { ...state, isLogin: true}            
+            return { ...state, isLogin: true }            
         }
         default:
             return state;
