@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Switch } from "react-router-dom"
-
+import {Grid, Row, Col} from "react-bootstrap"
 
 //import component
 import NavigationBar from './NaviagtionBar'
@@ -36,7 +36,7 @@ class Page extends Component {
                             <Route path="/account" component={Home} />
                             <Route path="/receiver/add" component={AddReceiver} />
                             <Route path="/receiver" component={Receiver} />                            
-                            <Route component={ErrorPage} />                            
+                            <Route path="/contact" component={Contact} />                            
                         </Switch>                            
                     </div>
                     <div className="row footer-box mr-0 ml-0">
@@ -52,17 +52,65 @@ class About extends Component {
     render() {
         return(
             <div>
-                About
+                <h3><b>About the bank</b></h3>
+                <img class="about-image" src={require("../../../image/ic_address.png")} />
+                <span><b> 227 Nguyễn Văn Cừ, phường 4, quận 5, thành phố Hồ Chí Minh</b></span><br/>
+                <img class="about-image" src={require("../../../image/ic_phone.png")} />
+                <span><b> 0123456789</b></span><br/>
+                <img class="about-image" src={require("../../../image/ic_email.png")} />
+                <span><b> contact@nhdbanking.com</b></span><br/>
+
+
+                <a href="https://www.facebook.com" target="_blank">
+                    <img class="about-image" src={require("../../../image/ic_facebook.png")} />
+                </a>
+                <a href="https://plus.google.com" target="_blank">
+                    <img class="about-image" src={require("../../../image/ic_google.png")} />
+                </a>
+                <a href="https://twitter.com" target="_blank">
+                    <img class="about-image" src={require("../../../image/ic_twitter.png")} />
+                </a>
             </div>
         )
     }
 }
 
-class ErrorPage extends Component {
+class Contact extends Component {
     render() {
         return(
             <div>
-                Error
+                <h3><b>Contact us</b></h3>
+                <div>
+                    <Grid>
+                        <Row>
+                            <Col xs={12} md={4}>
+                                <img class="avatar-image" src={require("../../../image/ducnh.jpg")}/>
+                                <h4 class="name"><b>Nguyễn Hoài Đức</b></h4>
+                                <img class="contact-image" src={require("../../../image/ic_phone.png")}/>
+                                <span><b> 0123456789</b></span><br/>
+                                <img class="contact-image" src={require("../../../image/ic_email.png")}/>
+                                <span><b> ducnh@nhdbanking.com</b></span>
+                            </Col>
+                            <Col xs={12} md={4}>
+                                <img class="avatar-image" src={require("../../../image/haidvt.jpg")}/>
+                                <h4 class="name"><b>Đinh Văn Tuấn Hải</b></h4>
+                                <img class="contact-image" src={require("../../../image/ic_phone.png")}/>
+                                <span><b> 0147258369</b></span><br/>
+                                <img class="contact-image" src={require("../../../image/ic_email.png")}/>
+                                <span><b> haidvt@nhdbanking.com</b></span>
+                            </Col>
+                            <Col xs={12} md={4}>
+                                <img class="avatar-image" src={require("../../../image/namlx.jpg")}/>
+                                <h4 class="name"><b>Lê Xuân Nam</b></h4>
+                                <img class="contact-image" src={require("../../../image/ic_phone.png")}/>
+                                <span><b> 0159753654</b></span><br/>
+                                <img class="contact-image" src={require("../../../image/ic_email.png")}/>
+                                <span><b> namlx@nhdbanking.com</b></span>
+                            </Col>
+                        </Row>
+                    </Grid>
+                </div>
+
             </div>
         )
     }
