@@ -10,6 +10,7 @@ import Receiver from './Receiver'
 import AddReceiver from './AddReceiver'
 import TransactionHistory from './TransactionHistory'
 import TransactionDetail from './TransactionDetail'
+import Footer from '../Staff/Footer'
 
 //import css
 import '../../../css/page.css'
@@ -43,8 +44,8 @@ class Page extends Component {
                             <Route path="/transaction/detail" component={TransactionDetail} />                         
                         </Switch>                            
                     </div>
-                    <div className="row footer-box mr-0 ml-0">
-                        footer
+                    <div className="row mr-0 ml-0">
+                        <Footer />
                     </div>
                 </div>
             </div>         
