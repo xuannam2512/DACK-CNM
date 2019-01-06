@@ -7,7 +7,10 @@ import Account from "./Account/Account"
 import Page from './pages/Page'
 
 const mapStateToProps = state => {
-    return { isLogined: state.isLogined };
+    return { 
+        isLogined: state.isLogined,
+        permission: state.permission
+    };
 };
 
 class App extends Component {
@@ -16,7 +19,8 @@ class App extends Component {
         super(props);
 
         this.state = {
-            isLogined: props.isLogined
+            isLogined: props.isLogined,
+            permission: props.permission
         }
     }
 
@@ -57,14 +61,24 @@ class App extends Component {
                 :
                 <div>
                 {
-                    window.location.href.trim().includes('/login')
+                    this.state.permission === 1
                     ?
-                    <div>     
-                        <Redirect to="/"/> 
-                        <Route path="/" component={Page}/>                                                                                                               
-                    </div>   
+                    <div>
+                        {
+                            window.location.href.trim().includes('/login')
+                                ?
+                                <div>
+                                    <Redirect to="/" />
+                                    <Route path="/" component={Page} />
+                                </div>
+                                :
+                                <Route path="/" component={Page} />
+                        }
+                    </div>
                     :
-                    <Route path="/" component={Page}/> 
+                    <div>
+                        {/* staff */}
+                    </div> 
                 }                    
                 </div>                                                 
             }                              

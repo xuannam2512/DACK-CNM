@@ -3,7 +3,6 @@ import { connect } from "react-redux"
 import NumberFormat from 'react-number-format'
 import Pagination from "react-js-pagination"
 import { Link } from "react-router-dom"
-import { Container, Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'mdbreact';
 
 //font awesome
 import '../../../../node_modules/font-awesome/css/font-awesome.min.css'
@@ -132,7 +131,6 @@ class Receiver extends Component
         ) 
 
         return (
-            <Container>
                 <div className="container-fluid pl-0 pr-0 home-box">
                     <div className="row mr-0 ml-0">
                         <div className="col-md-4 title-home">
@@ -181,10 +179,8 @@ class Receiver extends Component
                         />
                     </div>
                 </div>
-            </Container>
         )
     }
 }
-
 
 export default connect(mapStateToProps)(Receiver);
