@@ -81,13 +81,13 @@ class App extends Component {
                     :
                     <div>
                         {
-                            // window.location.href.trim().includes('/login')
-                            //     ?
-                            //     <div>
-                            //         <Redirect to="/" />
-                            //         <Route path="/" component={PageStaff} />
-                            //     </div>
-                            //     :
+                            window.location.href.trim().includes('/login')
+                                ?
+                                <div>
+                                    <Redirect to="/" />
+                                    <Route path="/" component={PageStaff} />
+                                </div>
+                                :
                                 <Route path="/" component={PageStaff} />
                         }
                     </div> 
