@@ -8,6 +8,8 @@ import Home from './Home'
 import Payment from './Payment'
 import Receiver from './Receiver'
 import AddReceiver from './AddReceiver'
+import TransactionHistory from './TransactionHistory'
+import TransactionDetail from './TransactionDetail'
 
 //import css
 import '../../../css/page.css'
@@ -36,7 +38,9 @@ class Page extends Component {
                             <Route path="/account" component={Home} />
                             <Route path="/receiver/add" component={AddReceiver} />
                             <Route path="/receiver" component={Receiver} />                            
-                            <Route path="/contact" component={Contact} />                            
+                            <Route path="/contact" component={Contact} />
+                            <Route path="/transaction/history" component={TransactionHistory} />
+                            <Route path="/transaction/detail" component={TransactionDetail} />                         
                         </Switch>                            
                     </div>
                     <div className="row footer-box mr-0 ml-0">

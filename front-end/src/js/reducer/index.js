@@ -79,6 +79,32 @@ const initState = {
             accountNumber: '775692189123',
             balance: 18000000
         }
+    ],
+    transactions: [
+        {
+            transaction_id: '123456781234',
+            sender_account_number: '775692189123',
+            reciver_account_number: '775692189456',
+            amount: 1000000,
+            type: 1,
+            date: "2019-01-04 22:44:50"
+        },
+        {
+            transaction_id: '123456782345',
+            sender_account_number: '775692189789',
+            reciver_account_number: '775692189456',
+            amount: 1000000,
+            type: 1,
+            date: "2019-01-04 23:08:16"
+        },
+        {
+            transaction_id: '123456783456',
+            sender_account_number: '775692189456',
+            reciver_account_number: '775692189456',
+            amount: 1000000,
+            type: 0,
+            date: "2019-01-05 00:17:36"
+        }
     ]
 }
 

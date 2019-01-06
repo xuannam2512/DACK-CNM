@@ -92,6 +92,7 @@
     align-items: center;
 }
 
+
 .transfer {
     display: flex;
     justify-content: flex-end;
@@ -144,6 +145,16 @@
     color: #0069D9;
 }
 
+.fa-history:hover {
+    color: #FF9800;
+}
+
+.fa-history {
+    font-size: 50px;
+    margin-right: 10px;
+    color: #F8F9FA;
+}
+
 .fa-arrow-circle-right:hover {
     color: #FF9800;
 }
@@ -160,6 +171,16 @@
 
 .fa-trash {
     font-size: 50px;
+}
+
+.fa-edit:hover {
+    color: #FF9800;
+}
+
+.fa-edit {
+    font-size: 50px;
+    margin-right: 10px;
+    color: #F8F9FA;
 }
 
 .format-custom {
