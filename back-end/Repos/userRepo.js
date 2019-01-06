@@ -2,11 +2,10 @@ var db = require('../fn/db');
 var md5 = require('crypto-js/md5');
 
 
-exports.loadAll  = userEntity =>{
+exports.loadAll  = () => {
     var sql = `select * from users`;
     return db.excuteQuery(sql);
 }
-
 
 exports.create = userEntity => {
     let md5_password = md5(userEntity.password);
@@ -18,8 +17,7 @@ exports.create = userEntity => {
 // exports.login = function(loginEntity) {   //write some code here }
 exports.login = (userEntity) => {
     var md5_password = md5(userEntity.password);
-    
-    
+
     var sql =  `select * from	 users where username = '${userEntity.username}' and password = '${md5_password}' `;
     return db.excuteQuery(sql);
 }
@@ -30,7 +28,7 @@ exports.logout = (userId) => {
     return db.excuteQuery(sql);
 }
 
-exports.getId = (userId) => {
+exports.getUserById = (userId) => {
     //write some code here
     var sql =  `select * from users where user_id = ${userId}`;
     return db.excuteQuery(sql);

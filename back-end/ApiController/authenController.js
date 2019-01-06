@@ -3,17 +3,25 @@ var router = express.Router();
 var authen = require('../repos/authenRepo');
 
 router.post('/accesstoken', (req, res) => {
-        authen.refreshAccessToken(req.body.refeshToken)
+        authen.refreshAccessToken(req.body.refesh_token)
         .then((data)=>{
-                res.status = 201;
-                res.json({
-                    "accesToken": data
-                });
+
+            res.status = 201;
+            res.json({
+                "access_token": data
+            });
         })
         .catch((err)=>{
-            console.log(err);
-            res.statusCode = 500;
-            res.end();
+            if(err == null)
+            {
+                res.statusCode = 400;
+                res.json({
+                    "msg": "refresh token invalid"
+                });
+            } else {
+                res.statusCode = 500;
+                res.end();
+            }            
         })
 
 });

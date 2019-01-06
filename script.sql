@@ -22,17 +22,20 @@ CREATE TABLE users_refresh_token (
     foreign key (user_id) references users(user_id)
 );
 
+#status 0 - locked, 1 - active
 CREATE TABLE account (
 	account_number varchar(13) not null unique,
     user_id int(11) not null,
     balance bigint(32) default 0,
     date datetime default now(),
+    status int(2) not null default 1,
     primary key (account_number),
     foreign key (user_id) references users(user_id)
 );
 
 #payments: 0 - người nhận trả phí, 1 - Người gửi trả phí
 #type: 0 - nạp tiền vào tài khoảng, 1 - chuyển tiền
+#success: 0 - giao dịch chưa thực hiện, 1 - giao dịch đã thực hiện
 CREATE TABLE transaction (
 	transaction_id int(32) not null auto_increment unique,
     payments int(2) not null default 0,
@@ -41,6 +44,7 @@ CREATE TABLE transaction (
     amount bigint(32) not null default 0,
     date datetime default now(),
     type int(2) not null default 0,
+    success int(2) not null default 0,
     primary key (transaction_id),
     foreign key (sender_account_number) references account(account_number),
     foreign key (reciver_account_number) references account(account_number)

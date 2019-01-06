@@ -26,14 +26,14 @@ exports.generateRefreshToken = () => {
 
 exports.updateRefreshToken = (userId, refreshToken) => {
     return new Promise((resolve, reject) => {
-        var deleteSql = `delete from user_refresh_token where userId = ${userId}`;
+        var deleteSql = `delete from users_refresh_token where user_id = ${userId}`;
 
         db.excuteQuery(deleteSql)
             .then((data) => {
                 
                 var refreshTokenTime = moment().format('YYYY-MM-DD HH:mm:ss');
                 console.log(refreshTokenTime);
-                var insertSql = `insert into user_refresh_token values ('${userId}', '${refreshToken}', '${refreshTokenTime}')`;
+                var insertSql = `insert into users_refresh_token(user_id, refresh_token, date) values ('${userId}', '${refreshToken}', '${refreshTokenTime}')`;
 
                 return db.excuteQuery(insertSql);
             })
@@ -51,25 +51,23 @@ exports.refreshAccessToken = (refreshToken) => {
    
    
     return new Promise((resolve, reject) => {
-        var sql = `SELECT *  FROM dagkcnm.user_refresh_token where refresToken =  '${refreshToken}'`;
+        var sql = `SELECT *  FROM users_refresh_token where refresh_token =  '${refreshToken}'`;
        
         db.excuteQuery(sql)
             .then((data) => {
-                console.log('________________')
-                console.log(data);
                 var countRow1 = data.length;
                 if (countRow1 >0) {
-                    var sqlnext = `select * from	 users where userID = ${data[0].userId}`;
-                   return db.excuteQuery(sqlnext)
-                   
-                }
-                
+                    var sqlnext = `select * from users where user_id = ${data[0].user_id}`;
+                   return db.excuteQuery(sqlnext)                   
+                } else {
+                    reject(null);
+                }           
             })
             .then((data) => {
                 var rowRow2 = data.length;
-                        if (rowRow2 > 0) {
-                            resolve(this.generateAccessToken(data)) ;
-                        }
+                if (rowRow2 > 0) {
+                    resolve(this.generateAccessToken(data));
+                }
             })
             .catch((err) => {
                 reject(err);

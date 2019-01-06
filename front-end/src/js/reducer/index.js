@@ -1,5 +1,8 @@
 const initState = {
-    isLogin: false,
+    isLogined: false,
+    userId: '',
+    refreshToken: '',
+    accessToken: '',
     accounts: [
         {
             accountNumber: '795866789123',
@@ -53,7 +56,18 @@ const rootReducer = (state = initState, action) => {
     switch (action.type) {
         case 'LOGIN': 
         {
+<<<<<<< HEAD
             return { ...state, isLogin: true }            
+=======
+            console.log(action);
+            return { 
+                ...state, 
+                isLogined: true, 
+                userId: action.payload.user.user_id,
+                refreshToken: action.payload.accessToken,
+                accessToken: action.payload.refreshToken
+            }            
+>>>>>>> f62c17fd3fd3e129905fe1bc6e5614440f8c7e26
         }
         default:
             return state;

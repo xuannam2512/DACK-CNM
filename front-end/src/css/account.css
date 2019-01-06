@@ -1,9 +1,13 @@
 .account-box {
-    background-image: url('../image/Future-of-credit-cards-protection.png');
-    background-size:     cover;     
+    background-image: url('../image/Future-of-credit-cards-protection.png');     
     background-repeat:   no-repeat;  
     width: 100%;
     height: 100%;  
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    position: absolute;
 }
 
 .title-box {

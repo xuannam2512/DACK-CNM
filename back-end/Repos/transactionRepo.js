@@ -25,30 +25,43 @@ exports.deleteId = account_number => {
     return db.excuteQuery(sql);
 }
 
+exports.loadAll = () => {
+    var sql = `select * from dackcnm.transaction where success = 1`;
+    return db.excuteQuery(sql);
+}
 
+exports.single = transaction_id => {
+    var sql = `select * from dackcnm.transaction where transaction_id = ${transaction_id} and success = 1`;
+    return db.excuteQuery(sql);
+}
 
-///////////////////////////////////////////////////////
+exports.loadByAccount = account_number => {
+    var sql = `select * from dackcnm.transaction where (sender_account_number = ${account_number} or reciver_account_number = ${account_number}) and success = 1`;
+    return db.excuteQuery(sql);
+}
 
+exports.createATransfer = transEntity => {
 
-exports.create = (accountEntity) => {
-    
     var date =  moment().format('YYYY-MM-DD HH:mm:ss');
-    var sql =  ` INSERT INTO account (account_number, user_id, balance, date) VALUES
-     ('${accountEntity.account_number}','${accountEntity.user_id}',${accountEntity.balance},'${date}') `;
-    console.log(":::::::  ",sql);
-    
+
+    var sql = `insert into dackcnm.transaction (payments, sender_account_number, reciver_account_number, 
+        amount, date, type) values (${transEntity.payments}, "${transEntity.sender_account_number}", 
+        "${transEntity.reciver_account_number}", ${transEntity.amount}, "${date}", ${transEntity.type})`;
+    console.log(sql);
     return db.excuteQuery(sql);
 }
 
-exports.logout = (userId) => {
-    //write some code here
-    var sql =  `delete from user_refresh_token where user_id = ${userId}`;
+exports.createARecharge = transEntity => {
+    var date =  moment().format('YYYY-MM-DD HH:mm:ss');
+
+    var sql = `insert into dackcnm.transaction (payments, sender_account_number, reciver_account_number, 
+        amount, date, type, success) values (${transEntity.payments}, "${transEntity.sender_account_number}", 
+        "${transEntity.reciver_account_number}", ${transEntity.amount}, "${date}", ${transEntity.type}, 1)`;
+    console.log(sql);
     return db.excuteQuery(sql);
 }
 
-exports.getId = (userId) => {
-    //write some code here
-    var sql =  `select * from users where user_id = ${userId}`;
+exports.execute = transaction_id => {
+    var sql = `update transaction set success = 1 where transaction_id = ${transaction_id}`;
     return db.excuteQuery(sql);
 }
-

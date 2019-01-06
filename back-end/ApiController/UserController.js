@@ -3,11 +3,10 @@ var express = require('express');
 var router = express.Router();
 
 var userRepo = require('../repos/userRepo');
+var accountRepo = require('../Repos/accountRepo');
 var authenRepo = require('../repos/authenRepo');
 var verifyAccessToken = require('../repos/authenRepo').verifyAccessToken;
 //test
-
-
 
 router.get('/',(req, res) => {
     // console.log(req.body);
@@ -23,6 +22,61 @@ router.get('/',(req, res) => {
             res.end();
         });
 });
+
+//get id  account
+router.get('/:id',verifyAccessToken,  (req, res) => {
+
+    userRepo.getUserById(req.params.id)
+        .then(data => {
+            if(data.length == 0)
+            {
+                res.statusCode = 204;
+                res.end();
+            } else {
+                res.statusCode = 200;
+                res.json(data[0]);
+            }            
+        })
+        .catch((err) => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end();
+        })
+});
+
+//get user by account number
+router.get('/account/:account_number', verifyAccessToken, (req, res) => {
+    
+    accountRepo.getAccountByAccountNumber(req.params.account_number)
+    .then(data => {
+        if(data.length > 0)
+        {
+            console.log(data[0].user_id);            
+            return userRepo.getUserById(data[0].user_id)
+        } else {
+            res.statusCode = 204;
+            res.json({
+                "msg": "Account is not exist"
+            })
+        }
+    })
+    .then(data => {
+        console.log("user: ", data)
+        if(data.length > 0) {
+            res.statusCode = 200;
+            res.json(data[0]);
+        } else {
+            res.statusCode = 204;
+            res.json({
+                "msg": "User is not exist"
+            });
+        }
+    })
+    .catch(err => {
+        res.statusCode = 500;
+        res.end();
+    })
+})
 
 //register a account.
 router.post('/', (req, res) => {
@@ -60,13 +114,15 @@ router.post('/login', (req, res) => {
                 //  đăng nhập thành công
                 var accessToken = authenRepo.generateAccessToken(data);
                 var refeshToken = authenRepo.generateRefreshToken();
-                authenRepo.updateRefreshToken(data[0].userId, refeshToken)
-                res.statusCode = 201;
-                res.json({
-                    "user": data[0],
-                    "accessToken": accessToken,
-                    "refreshToken": refeshToken
-                });
+                authenRepo.updateRefreshToken(data[0].user_id, refeshToken)
+                .then(value => {
+                    res.statusCode = 201;
+                    res.json({
+                        "user": data[0],
+                        "accessToken": accessToken,
+                        "refreshToken": refeshToken
+                    });
+                })                
             } else {
                 res.statusCode = 204;
                 res.end();
@@ -79,30 +135,11 @@ router.post('/login', (req, res) => {
         })
 });
 
-//get id  account
-router.get('/:id',verifyAccessToken,  (req, res) => {
-
-    userRepo.getId(req.params.id)
-        .then(data => {
-            res.statusCode = 200;
-            res.json(data);
-        })
-        .catch((err) => {
-            console.log(err);
-            res.statusCode = 500;
-            res.end();
-        })
-});
-
-
-
-
 router.post('/logout',verifyAccessToken, (req, res) => {
     //write some code here
     console.log(req.body.userId);
     userRepo.logout(req.body.userId)
         .then(data => {
-            console.log("Logout success");
             res.status = 200;
             res.end();
         }).catch((err) => {

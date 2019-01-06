@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { BrowserRouter as Router, Route, Link, withRouter, Redirect } from "react-router-dom"
+import { Link, withRouter } from "react-router-dom"
 
 //import css
 import '../../../css/navigationbar.css'
@@ -22,7 +22,7 @@ class NavigationBar extends Component
                 <div className="container-fluid pl-0 pr-0">
                     <div className="row">
                         <div className="col-md-4 nav-right-box pl-0 pr-0">
-                            <img src={logo}></img>
+                            <img src={logo} alt=""></img>
                         </div>                     
                         <div className="col-md-8 pl-0 pr-0 nav-left-box">
                             <div className="row nav-title">
