@@ -31,8 +31,10 @@ class App extends Component {
         super(props);
 
         this.state = {
-            isLogined: props.isLogined,
-            permission: props.permission
+            // isLogined: props.isLogined,
+            // permission: props.permission
+            isLogined: true,
+            permission: 0
         }
     }
 

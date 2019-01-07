@@ -82,19 +82,18 @@ class PageRegisterCustomer extends Component {
         }
         this._handleChange  = this._handleChange.bind(this)
         this._handleClickbtnRegister = this._handleClickbtnRegister.bind(this)
+        this._handleRestValue = this._handleRestValue.bind(this)
     }
-    state = {
-        age: '',
-        name: 'hai',
-        labelWidth: 0,
+
+    
+    _handleRestValue = ()  => {
+        this.setState({xUserName : ''});
+        this.setState({xFullName: ''});
+        this.setState({xMail: ''});
+        this.setState({xPassword: ''});
+        this.setState({xPhone:''});
+    
     };
-
-    // componentDidMount() {
-    //     this.setState({
-    //         // labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
-    //     });
-    // }
-
     _handleChange = name => event => {this.setState({[name]: event.target.value});};
     _handleClickbtnRegister = () =>{
         if (this.state.xUserName =='') this.props.enqueueSnackbar(`Message: UserName Invalid`, { variant :'warning' } );
@@ -117,7 +116,7 @@ class PageRegisterCustomer extends Component {
                     username: this.state.xUserName,
                     fullname: this.state.xFullName,
                     phone: this.state.xPhone,
-                    email: this.state.xMail,
+                    email: this.state.xMail + '@gmail.com',
                     password: this.state.xPassword,
                     permission: 1
                 },
@@ -129,6 +128,9 @@ class PageRegisterCustomer extends Component {
             .then(res => {
                 switch (res.status) {
                     case 201:
+                    this._handleRestValue();
+                    this.state.xUserName  = this.state.xFullName = this.state.xMail = 
+                    this.state.xPassword  = this.state.xPhone = ''  
                     this.props.enqueueSnackbar(`Sign Up Success`,{ variant :'success' })
                         break;
                     case 203:
@@ -187,7 +189,7 @@ class PageRegisterCustomer extends Component {
                                                 <TextField
                                                     label="Full Name"
                                                     value={this.state.xFullName}
-                                                    onChange = {this._handleChange('xFullName')}
+                                                    onChange = {this._handleChange('xFullName') }
                                                     className={classes.textField}
                                                     // autoComplete="current-password group float-left ml-2"
                                                     margin="normal"
@@ -203,20 +205,16 @@ class PageRegisterCustomer extends Component {
                                                 <i style={{ color: '#303F9F' }} className="fa fa-phone fa-2x pt-3 float-left" aria-hidden="true"></i>
                                             </div>
                                             <div className= 'w-100'>
-                                                <InputMask {...this.props} mask="9999 999 999" maskChar=" " 
-                                                        onChange = {this._handleChange('xPhone')}
-                                                        value={this.state.xPhone}
-                                                        >
                                                     <TextField
                                                         label="Phone"
                                                         className={classes.textField}
-                                                        // value={this.state.xPhone}
-                                                        // onChange = {this._handleChange('xPhone')}
+                                                        value={this.state.xPhone}
+                                                        onChange = {this._handleChange('xPhone')}
                                                         margin="normal"
                                                         fullWidth
+                                                        type= 'number'
                                                         style={{ margin: 8 }}
                                                     />
-                                                </InputMask>
                                             </div>
                                         </div>
                                     </Grid>
@@ -236,7 +234,7 @@ class PageRegisterCustomer extends Component {
                                                 fullWidth
                                                 style={{ margin: 8 }}
                                             />
-                                            <Typography align="center " style={{fontSize:20 , fontWeight:350}} variant="p">
+                                            <Typography align="center " style={{fontSize:20 , fontWeight:350}} variant="h6">
                                             @gmail.com
                                             </Typography>
                                         </div>
