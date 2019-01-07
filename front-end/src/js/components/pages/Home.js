@@ -38,7 +38,7 @@ const mapDispatchToProps = dispatch => {
 };
 
 //define
-const NUMBER_OF_ITEM = 3;
+const NUMBER_OF_ITEM = 7;
 
 class Home extends Component {
     constructor(props) {        
