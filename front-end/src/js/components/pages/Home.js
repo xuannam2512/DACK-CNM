@@ -38,7 +38,7 @@ const mapDispatchToProps = dispatch => {
 };
 
 //define
-const NUMBER_OF_ITEM = 3;
+const NUMBER_OF_ITEM = 7;
 
 class Home extends Component {
     constructor(props) {        
@@ -165,19 +165,24 @@ class Home extends Component {
             }
         })
         .then(res => {
-            
-            this.props.loadAccounts(res.data.filter(account => account.status === 1));
-            this.setState({
-                accounts: this.props.accounts,
-                accountsDisplay: this.props.accounts.slice(0, NUMBER_OF_ITEM),
-                accountsFilter: this.props.accounts,
-                activePage: 1,
-                itemsCountPerPage: 1,
-                totalItemsCount: parseInt(this.props.accounts.length / NUMBER_OF_ITEM) + 1,
-                pageRangeDisplayed:5,   
-            });
+            if(res.status === 204)
+            {
+                
+            } else {
+                this.props.loadAccounts(res.data.filter(account => account.status === 1));
+                this.setState({
+                    accounts: this.props.accounts,
+                    accountsDisplay: this.props.accounts.slice(0, NUMBER_OF_ITEM),
+                    accountsFilter: this.props.accounts,
+                    activePage: 1,
+                    itemsCountPerPage: 1,
+                    totalItemsCount: parseInt(this.props.accounts.length / NUMBER_OF_ITEM) + 1,
+                    pageRangeDisplayed:5,   
+                });
+            }            
         })
         .catch(err => {
+            console.log(err);
             if(err.response.status === 401)
             {
                 axios({
