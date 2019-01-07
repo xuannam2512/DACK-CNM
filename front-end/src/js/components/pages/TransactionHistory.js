@@ -74,7 +74,8 @@ class Receiver extends Component
 
         var searchString = e.target.value.trim().toLowerCase();
         if(searchString.length > 0) {
-            transactionList = this.state.transactions.filter(transaction => transaction.transaction_id.match(searchString));            
+            let transactionId = parseInt(searchString);
+            transactionList = this.props.transactions.filter(transaction => transaction.transaction_id === transactionId);            
             
             this.setState({
                 transactionsFilter: transactionList,
