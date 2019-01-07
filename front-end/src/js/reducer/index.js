@@ -5,7 +5,8 @@ const initState = {
     receivers:[],
     accounts: [],
     transactions: [],
-    transaction: []
+    transaction: [],
+    users: []
 }
 
 const rootReducer = (state = initState, action) => {
@@ -46,6 +47,14 @@ const rootReducer = (state = initState, action) => {
             return {
                 ...state,
                 accounts: action.payload
+            }
+        }
+        case 'LOAD_USERS':
+        {
+            console.log(action.payload);
+            return {
+                ...state,
+                users: action.payload
             }
         }
         case 'LOAD_TRANSACTIONS':

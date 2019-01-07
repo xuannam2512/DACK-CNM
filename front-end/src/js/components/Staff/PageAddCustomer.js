@@ -9,7 +9,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import FilledInput from '@material-ui/core/FilledInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import { connect } from 'react-redux'
-
+import axios from 'axios';
 
 //user
 import Grid from '@material-ui/core/Grid';
@@ -24,60 +24,13 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import deburr from 'lodash/deburr';
 import Downshift from 'downshift';
-import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
-import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 //////////// END hải 2/1/////////////
 //import component
 import NavigationBar from '../pages/NaviagtionBar'
 // notification
 import { SnackbarProvider, withSnackbar } from 'notistack';
-
-
-const ExpansionPanel = withStyles({
-    root: {
-    //   border: '1px solid rgba(0,0,0,.125)',
-      boxShadow: 'none',
-      '&:not(:last-child)': {
-        borderBottom: 0,
-      },
-      '&:before': {
-        display: 'none',
-      },
-    },
-    expanded: {
-      margin: 'auto',
-    },
-  })(MuiExpansionPanel);
-  
-  const ExpansionPanelSummary = withStyles({
-    root: {
-    //   backgroundColor: 'rgba(0,0,0,.03)',
-       border: '2px solid rgba(0,0,0,.125)',
-       borderRadius:'2%',
-      display:'block',
-      marginBottom: -1,
-      minHeight: 56,
-      '&$expanded': {
-        minHeight: 56,
-      },
-    },
-    content: {
-      '&$expanded': {
-        margin: '12px 0',
-         width:'100%',
-      },
-    },
-    expanded: {},
-  })(props => <MuiExpansionPanelSummary {...props} />);
-  
-  ExpansionPanelSummary.muiName = 'ExpansionPanelSummary';
-  
-  const ExpansionPanelDetails = withStyles(theme => ({
-    root: {
-      padding: theme.spacing.unit * 2,
-    },
-  }))(MuiExpansionPanelDetails);
+// import active
+import {loadUsers} from '../../actions/index'
 
 
 const styles = theme => ({
@@ -140,46 +93,110 @@ const styles = theme => ({
 });
 
 
-// START TEXTCOMPLATE
 
-const suggestions = [
-    { label: 'XuanNam' },
-    { label: 'Hai' },
-    { label: 'Albania' },
-    { label: 'Algeria' },
-    { label: 'American Samoa' },
-    { label: 'Andorra' },
-    { label: 'Angola' },
-    { label: 'Anguilla' },
-    { label: 'Antarctica' },
-    { label: 'Antigua and Barbuda' },
-    { label: 'Argentina' },
-    { label: 'Armenia' },
-    { label: 'Aruba' },
-    { label: 'Australia' },
-    { label: 'Austria' },
-    { label: 'Azerbaijan' },
-    { label: 'Bahamas' },
-    { label: 'Bahrain' },
-    { label: 'Bangladesh' },
-    { label: 'Barbados' },
-    { label: 'Belarus' },
-    { label: 'Belgium' },
-    { label: 'Belize' },
-    { label: 'Benin' },
-    { label: 'Bermuda' },
-    { label: 'Bhutan' },
-    { label: 'Bolivia, Plurinational State of' },
-    { label: 'Bonaire, Sint Eustatius and Saba' },
-    { label: 'Bosnia and Herzegovina' },
-    { label: 'Botswana' },
-    { label: 'Bouvet Island' },
-    { label: 'Brazil' },
-    { label: 'British Indian Ocean Territory' },
-    { label: 'Brunei Darussalam' },
-];
 
-function renderInput(inputProps) {
+
+
+const mapStateToProps = state => {
+    return {
+        _Users: state.users
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        loadUsers: users => {
+            return dispatch(loadUsers(users));
+        } 
+    };
+};
+
+
+class PageAddCustomer extends Component {
+    constructor() {
+        super();
+        this.state = {
+            xUserName:'',
+            xPhone:'',
+            xMail:'',
+            xUserID: '',
+        }
+        this._handleChange  = this._handleChange.bind(this)
+        this._handleClickbtnRegister = this._handleClickbtnRegister.bind(this)
+        this._handleRestValue = this._handleRestValue.bind(this)
+
+    }
+   
+    _handleRestValue = ()  => {
+        this.setState({xUserName : ''});
+        this.setState({xMail: ''});
+        this.setState({xPhone:''});
+    
+    };
+    _handleChange = name => event => {this.setState({[name]: event.target.value});};
+    _handleClickbtnRegister = () =>{
+        {
+            if (this.state.xUserName =='') this.props.enqueueSnackbar(`Message: UserName Invalid`, { variant :'warning' } );
+            else if (this.state.xMail =='') this.props.enqueueSnackbar(`Message: Enter in UserName`, { variant :'warning' } );
+            else if (this.state.xPhone =='') this.props.enqueueSnackbar(`Message: Enter in UserName`, { variant :'warning' } );
+            else{     
+            axios({
+                method:'post',
+                url: `http://localhost:3000/api/accounts`,
+                data: {
+                    user_id: this.state.xUserID,
+                    balance: 50000
+                },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                }
+            })
+            .then(res => {
+                switch (res.status) {
+                    case 201:
+                    this._handleRestValue();
+                    this.state.xUserName  = this.state.xUserID = this.state.xMail = 
+                    this.state.xPhone = ''  
+                    this.props.enqueueSnackbar(`Create a new account successfully`,{ variant :'success' })
+                    console.log('daaa  :: ',res.data);
+                        break;
+                    default:
+                        break;
+                }
+            })
+            .catch(err => {
+                this.props.enqueueSnackbar(`Message: ${err.message}`, { variant :'error' } );
+            })   
+        }  
+        }
+    }
+    componentDidMount() {
+        axios({
+            method:'get',
+            url: `http://localhost:3000/api/users`,
+            data: {
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+        })
+        .then(res => {
+             this.props.loadUsers(res.data);
+        })
+        .catch(err => {
+            console.log(`Message : ${err.message}`, { variant :'error' } );
+        })   
+    
+    
+    
+    }
+
+
+    // START TEXTCOMPLATE
+
+ renderInput = (_this,inputProps) => {
     const { InputProps, classes, ref, ...other } = inputProps;
 
     return (
@@ -192,88 +209,89 @@ function renderInput(inputProps) {
             id="standard-password-input"
             label="User Name"
             margin="normal"
+            //value={this.state.xUserName}
+            //onChange = {console.log('xUserName :: ',this.state.xUserName)}
+            onKeyDown ={(ev) => {
+                if (ev.key === 'Enter') {
+                  // Do code here
+                  
+                  this.setState({ xUserName : ev.target.value}) 
+                  var mail ;
+                  this.props._Users.map(d=>{if(d.username === ev.target.value) mail =  d.email });
+                  console.log(mail);
+                  this.setState({xMail : mail});
+                  var phone ;
+                   this.props._Users.map(d=>{if(d.username === ev.target.value) phone=  d.phone });
+                  this.setState({xPhone : phone});
+                  var userid ;
+                  this.props._Users.map(d=>{if(d.username === ev.target.value) userid=  d.user_id });
+                   this.setState({xUserID : userid});
+
+                   
+                  ev.preventDefault();
+                }
+              }}
             fullWidth
             style={{ margin: 8 }}
         />
     );
 }
-function renderSuggestion({ suggestion, index, itemProps, highlightedIndex, selectedItem }) {
-    const isHighlighted = highlightedIndex === index;
-    const isSelected = (selectedItem || '').indexOf(suggestion.label) > -1;
 
-    return (
-        <MenuItem
-            {...itemProps}
-            key={suggestion.label}
-            selected={isHighlighted}
-            component="div"
-        // style={{
-        //   fontWeight: isSelected ? 500 : 400,
-        // }}
-        >
-            {suggestion.label}
-        </MenuItem>
-    );
-}
-renderSuggestion.propTypes = {
+propTypes = {
     highlightedIndex: PropTypes.number,
     index: PropTypes.number,
     itemProps: PropTypes.object,
     selectedItem: PropTypes.string,
     suggestion: PropTypes.shape({ label: PropTypes.string }).isRequired,
 };
-function getSuggestions(value) {
+
+ renderSuggestion = ({ suggestion, index, itemProps, highlightedIndex, selectedItem }) => {
+    const isHighlighted = highlightedIndex === index;
+    const isSelected = (selectedItem || '').indexOf(suggestion.username) > -1;
+    return (
+        <MenuItem
+            {...itemProps}
+            key={suggestion.username}
+            selected={isHighlighted}
+            component="div"
+           // onClick= {  console.log(itemProps)  }
+        style={{
+          fontWeight: isSelected ? 500 : 400,
+          
+        }}
+        >
+             {suggestion.username} 
+        </MenuItem>
+    );
+}
+
+ getSuggestions = (value, _this) => {
     const inputValue = deburr(value.trim()).toLowerCase();
     const inputLength = inputValue.length;
     let count = 0;
-
+    
     return inputLength === 0
         ? []
-        : suggestions.filter(suggestion => {
+        : _this.props._Users.filter(suggestion => {
             const keep =
-                count < 5 && suggestion.label.slice(0, inputLength).toLowerCase() === inputValue;
-
+                 suggestion.username.slice(0, inputLength).toLowerCase() === inputValue ;
+            
+            
             if (keep) {
                 count += 1;
             }
             return keep;
-        });
+        }
+        
+        );
 }
 // END TEXTCOMPLATE
 
-const mapStateToProps = state => {
-    return {
-        xuser: state.xuser,
-        xfullname: state.xfullname,
-        xphone: state.xphone,
-        xmail: state.xmail,
-        xpassword: state.xpassword
-    };
-};
-
-
-class PageAddCustomer extends Component {
-    constructor() {
-        super();
-        this.state = {
-        }
-    }
-    // state = {
-    //     age: '',
-    //     name: 'hai',
-    //     labelWidth: 0,
-    // };
-
-
-    handleChange = name => event => {
-        this.setState({ [name]: event.target.value });
-    };
 
     render() {
         const { classes } = this.props;
 
         return (
-            <Router>
                 <div className="page-box">
                     <div className="container pr-0 pl-0">
                         <div className={classes.root}>
@@ -299,7 +317,7 @@ class PageAddCustomer extends Component {
                                                 selectedItem,
                                             }) => (
                                                     <div className={classNames(classes.xcontainer,'w-100')}>
-                                                        {renderInput({
+                                                        {this.renderInput(this,{
                                                             classes,
                                                             InputProps: getInputProps({
                                                                 placeholder: 'Search full name',
@@ -308,11 +326,11 @@ class PageAddCustomer extends Component {
                                                         <div {...getMenuProps()}>
                                                             {isOpen ? (
                                                                  <Paper className={classes.xpaper} square>
-                                                                    {getSuggestions(inputValue).map((suggestion, index) =>
-                                                                        renderSuggestion({
+                                                                    {this.getSuggestions(inputValue,this).map((suggestion, index) =>
+                                                                        this.renderSuggestion({
                                                                             suggestion,
                                                                             index,
-                                                                            itemProps: getItemProps({ item: suggestion.label }),
+                                                                            itemProps: getItemProps({ item: suggestion.username }),
                                                                             highlightedIndex,
                                                                             selectedItem,
                                                                         }),
@@ -333,9 +351,10 @@ class PageAddCustomer extends Component {
                                             </div>
                                             <div className='w-100'>
                                                 <TextField
-                                                    id="standard-password-input"
+                                                    disabled
+                                                     value={this.state.xMail}
+                                                    //onChange = {this._handleChange('xMail')}
                                                     label="Mail"
-                                                    value={this.props.xmail}
                                                     className={classes.textField}
                                                     // autoComplete="current-password group float-left ml-2"
                                                     margin="normal"
@@ -352,9 +371,10 @@ class PageAddCustomer extends Component {
                                             </div>
                                             <div className='w-100'>
                                                 <TextField
-                                                    id="standard-password-input"
+                                                    disabled
                                                     label="Phone"
-                                                    value={this.props.xphone}
+                                                    value={this.state.xPhone}
+                                                    //onChange = {this._handleChange('xPhone')}
                                                     className={classes.textField}
                                                     // autoComplete="current-password group float-left ml-2"
                                                     margin="normal"
@@ -371,7 +391,7 @@ class PageAddCustomer extends Component {
                                                 variant="contained"
                                                 color="primary"
                                                 className={classNames(classes.margin, classes.cssRoot, classes.affected)}
-                                                onClick={()=>{ this.props.enqueueSnackbar('Add Completely !!!'); }}
+                                                onClick={()=>{ this._handleClickbtnRegister() }}
                                             >
                                                 Register UI Acount
                                             </Button>
@@ -385,7 +405,6 @@ class PageAddCustomer extends Component {
 
                     </div>
                 </div >
-            </Router >
         )
     }
 }
@@ -394,7 +413,7 @@ PageAddCustomer.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(withSnackbar(PageAddCustomer)));
+export default connect(mapStateToProps,mapDispatchToProps )(withStyles(styles)(withSnackbar(PageAddCustomer)));
 
 class About extends Component {
     render() {

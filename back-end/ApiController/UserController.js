@@ -114,7 +114,32 @@ router.post('/', (req, res) => {
                 res.json({
                     "message": "Username Invalid"
                 });
-            } else {
+            } 
+            else if (value.indexOf("fullname") > 0) {
+                res.statusCode = 203;
+                res.json({
+                    "message": "Fullname Invalid"
+                });
+            } 
+            else if (value.indexOf("phone") > 0) {
+                res.statusCode = 203;
+                res.json({
+                    "message": "Phone Invalid"
+                });
+            }
+            else if (value.indexOf("email") > 0) {
+                res.statusCode = 203;
+                res.json({
+                    "message": "Email Invalid"
+                });
+            } 
+            else if (value.indexOf("password") > 0) {
+                res.statusCode = 203;
+                res.json({
+                    "message": "Password Invalid"
+                });
+            }
+            else {
                 console.log(err);
                 res.statusCode = 500;
                 res.end();

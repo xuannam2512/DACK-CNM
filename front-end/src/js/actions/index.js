@@ -1,5 +1,6 @@
 
 import { LOAD_ACCOUNTS, LOCK_ACCOUNT, LOGOUT, LOGIN, LOAD_RECEIVERS, ADD_RECEIVERS, LOAD_TRANSACTIONS, LOAD_TRANSACTION_BY_ID   } from '../constants/action_type'
+import { LOAD_USERS } from '../constants/action_type'
 
 export const login = loginEntity => (
     {
@@ -46,6 +47,13 @@ export const loadTransactions = (transactions) => (
     {
         type: LOAD_TRANSACTIONS,
         payload: transactions
+    }
+)
+
+export const loadUsers = (users) => (
+    {
+        type: LOAD_USERS,
+        payload: users
     }
 )
 
