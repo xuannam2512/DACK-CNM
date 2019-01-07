@@ -122,7 +122,8 @@ class PageRegisterCustomer extends Component {
                 },
                 headers: {
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Access-Control-Allow-Origin': '*',
+                    'x-access-token': localStorage.getItem('access_token')
                 }
             })
             .then(res => {
