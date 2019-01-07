@@ -19,7 +19,7 @@ router.get('/',(req, res) => {
         .catch((err) => {
             console.log(err);
             res.statusCode = 500;
-            res.end();
+            res.json(err);
         });
 });
 
@@ -40,7 +40,7 @@ router.get('/:id',verifyAccessToken,  (req, res) => {
         .catch((err) => {
             console.log(err);
             res.statusCode = 500;
-            res.end();
+            res.json(err);
         })
 });
 
@@ -61,7 +61,7 @@ router.get('/token/:refreshToken', (req, res) => {
         .catch((err) => {
             console.log(err);
             res.statusCode = 500;
-            res.end();
+            res.json(err);
         });
 })
 
@@ -95,7 +95,7 @@ router.get('/account/:account_number', verifyAccessToken, (req, res) => {
     })
     .catch(err => {
         res.statusCode = 500;
-        res.end();
+        res.json(err);
     })
 })
 
@@ -124,7 +124,7 @@ router.post('/', (req, res) => {
             else {
                 console.log(err);
                 res.statusCode = 500;
-                res.end();
+                res.json(err);
             }
         });
 });
@@ -159,7 +159,7 @@ router.post('/login', (req, res) => {
         .catch((err) => {
             console.log(err);
             res.statusCode = 500;
-            res.end();
+            res.json(err);
         })
 });
 
@@ -169,11 +169,11 @@ router.post('/logout',verifyAccessToken, (req, res) => {
     userRepo.logout(req.body.userId)
         .then(data => {
             res.status = 200;
-            res.end();
+            res.json(data);
         }).catch((err) => {
             console.log(err);
             res.statusCode = 500;
-            res.end();
+            res.json(err);
         })
 });
 
@@ -190,7 +190,7 @@ router.get('/:user_id/recivers',verifyAccessToken,  (req, res) => {
     .catch(err=>{
      console.log("get  users/recivers : ", err.message);
      res.statusCode = 500;
-     res.end();
+     res.json(err);
     })
  });
 
@@ -208,7 +208,7 @@ router.post('/:user_id/recivers',  (req, res) => {
     .catch(err=>{
      console.log("get  users/recivers : ", err.message);
      res.statusCode = 500;
-     res.end();
+     res.json(err);
     })
  });
 
@@ -225,7 +225,7 @@ router.get('/:user_id/transactions',  (req, res) => {
     .catch(err=>{
      console.log("Xem chi tiết một giao dịch : ", err.message);
      res.statusCode = 500;
-     res.end();
+     res.json(err);
     })
  });
 
@@ -243,7 +243,7 @@ router.get('/:user_id/transactions/:transaction_id',  (req, res) => {
     .catch(err=>{
      console.log("Xem chi tiết một giao dịch : ", err.message);
      res.statusCode = 500;
-     res.end();
+     res.json(err);
     })
  });
 
@@ -259,7 +259,7 @@ router.post('/:user_id/transactions/',  (req, res) => {
     .catch(err=>{
      console.log("Xem chi tiết một giao dịch : ", err.message);
      res.statusCode = 500;
-     res.end();
+     res.json(err);
     })
  });
 

@@ -207,10 +207,8 @@ class PageRecharge extends Component {
                     
                     money = this.state.xstatusMoney.substring(5);
                     money *= 1000;
-                    alert(money);
                 } else {
                     money = this.state.xMoneyCustom;
-                    alert(money);
                 }
                
             axios({
@@ -307,7 +305,7 @@ class PageRecharge extends Component {
                     
                     axios({
                         method:'get',
-                        url: `http://localhost:3000/api/users/${userid}/accounts/`,
+                        url: `http://localhost:3000/api/accounts/users/${userid}`,
                         data: {
                         },
                         headers: {
