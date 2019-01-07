@@ -92,8 +92,9 @@ router.post('/', (req, res) => {
     if (req.body.type == 0) {           //nap tien
         transactionRepo.createARecharge(req.body)
         .then(rows => {
-
-            accountRepo.addBalance(req.body.reciver_account_number, req.body.amount)
+            var fee = 5000;
+            let subAmount = parseInt(req.body.amount) - parseInt(fee);
+            accountRepo.addBalance(req.body.reciver_account_number, subAmount)
             .then(values => {
                 res.statusCode = 201;
                 res.json({"message": "Nap tien thanh cong"});
