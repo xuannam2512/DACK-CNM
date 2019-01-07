@@ -44,6 +44,27 @@ router.get('/:id',verifyAccessToken,  (req, res) => {
         })
 });
 
+// get user by refresh token
+router.get('/token/:refreshToken', (req, res) => {
+
+    userRepo.getUserByToken(req.params.refreshToken)
+        .then(data => {
+            if(data.length == 0)
+            {
+                res.statusCode = 204;
+                res.end();
+            } else {
+                res.statusCode = 200;
+                res.json(data[0]);
+            } 
+        })
+        .catch((err) => {
+            console.log(err);
+            res.statusCode = 500;
+            res.end();
+        });
+})
+
 //get user by account number
 router.get('/account/:account_number', verifyAccessToken, (req, res) => {
     

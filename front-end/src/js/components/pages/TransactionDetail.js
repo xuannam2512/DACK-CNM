@@ -3,6 +3,7 @@ import { connect } from "react-redux"
 import NumberFormat from 'react-number-format'
 import Pagination from "react-js-pagination"
 import { Link } from "react-router-dom"
+import axios from 'axios'
 
 //font awesome
 import '../../../../node_modules/font-awesome/css/font-awesome.min.css'
@@ -14,10 +15,20 @@ import '../../../css/Home.css'
 //import image
 import bankLogo from '../../../image/logo2.png'
 
+//import action
+import { loadTransactionById } from '../../actions/index'
 
 //map state to props
 const mapStateToProps = state => {
-    return { transaction: state.transactions[2] };
+    return { transaction: state.transaction };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        loadTransactionById: transaction => {
+            return dispatch(loadTransactionById(transaction));
+        }
+    };
 };
 
 class Receiver extends Component 
@@ -28,6 +39,56 @@ class Receiver extends Component
         this.state = {
             transaction: props.transaction
         }
+    }
+
+    componentDidMount() {
+        var pathname = this.props.location.pathname;
+
+        var res = pathname.split("/");
+        var transaction_id = res[3];
+
+        axios({
+            method:'get',
+            url: `http://localhost:3000/api/transactions/${transaction_id}`,
+            headers: {
+                'x-access-token': localStorage.getItem('access_token')
+            }
+        })
+        .then(res => {
+            this.props.loadTransactionById(res.data);
+            this.setState({
+                transaction: this.props.transaction
+            });
+        })
+        .catch(err => {
+            if (err.response.status === 401) {
+                axios({
+                    method: 'post',
+                    url: `http://localhost:3000/api/authen/accesstoken`,
+                    data: {
+                        refesh_token: localStorage.getItem("refresh_token")
+                    },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(res => {
+                        localStorage.setItem('access_token', res.data.access_token)
+                        this.componentDidMount();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
+        });
+
+        
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            transaction: nextProps.transaction
+        })
     }
 
     render() {
@@ -57,17 +118,11 @@ class Receiver extends Component
                     </div>
                     <div className="col-md-10">
                         <div className="row mr-0 ml-0">
-                            <span>
-                                <NumberFormat 
-                                    value={transaction.transaction_id}
-                                    format="#### - #### - ####"
-                                    className="transaction-detail-id"
-                                />
-                            </span>
+                            <span className="transaction-detail-id">{transaction.transaction_id}</span>
                         </div>
                         <div className="row mr-0 ml-0">
                             <div className="col-md-6">
-                                <span class="transaction-detail-title">From: </span>
+                                <span className="transaction-detail-title">From: </span>
                                 <span>
                                     <NumberFormat 
                                         value={transaction.sender_account_number}
@@ -77,7 +132,7 @@ class Receiver extends Component
                                 </span>
                             </div>
                             <div className="col-md-6">
-                                <span class="transaction-detail-title">To: </span>
+                                <span className="transaction-detail-title">To: </span>
                                 <span>
                                     <NumberFormat 
                                         value={transaction.reciver_account_number}
@@ -88,7 +143,7 @@ class Receiver extends Component
                             </div>
                         </div>
                         <div className="row mr-0 ml-0">
-                            <div class="col-md-6">
+                            <div className="col-md-6">
                                 <span className="transaction-detail-title">Amount:</span>
                                 <span className="transaction-detail-value">
                                     <NumberFormat 
@@ -99,13 +154,13 @@ class Receiver extends Component
                                     <u className="ml-1">đ</u> 
                                 </span>
                             </div>
-                            <div class="col-md-6">
+                            <div className="col-md-6">
                                 <span className="transaction-detail-title">Type of transaction:</span>
                                 {type}
                             </div>
                         </div>
                         <div className="row mr-0 ml-0">
-                            <div class="col-md-6">
+                            <div className="col-md-6">
                                 <span className="transaction-detail-title">Time:</span>
                                 <span className="transaction-detail-value">{transaction.date}</span>
                             </div>
@@ -117,4 +172,4 @@ class Receiver extends Component
     }
 }
 
-export default connect(mapStateToProps)(Receiver);
+export default connect(mapStateToProps, mapDispatchToProps)(Receiver);

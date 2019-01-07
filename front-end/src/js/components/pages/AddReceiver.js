@@ -3,9 +3,29 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { withRouter } from 'react-router-dom'
+import InputMask from 'react-input-mask';
+import { connect } from 'react-redux'
+import axios from 'axios'
+
+import { addReceiver } from '../../actions/index'
 
 //import css
 import '../../../css/AddReceiver.css'
+
+
+const mapDispatchToProps = dispatch => {
+    return {
+        addReceiver: receiver => {
+            return dispatch(addReceiver(receiver));
+        }
+    };
+};
+
+const mapStateToProps = state => {
+    return { 
+        userId: state.userId
+    };
+};
 
 const styles = theme => ({
     container: {
@@ -40,29 +60,9 @@ class AddReceiver extends Component
     }
 
     handleOnchangeAccountNumber = (e) => {
-        let str = "";
-        let strNumber = "1234567890"
-        if(this.state.accountNumber.length < e.target.value.length)
-        {
-            str = e.target.value;
-
-            if (str.length === 4 || str.length === 11 || str.length === 18) {
-                str = str + " - ";
-                this.setState({
-                    accountNumber: str
-                });
-            }
-
-            if (strNumber.includes(str.charAt(str.length - 1)) && str.length <= 25) {
-                this.setState({
-                    accountNumber: str
-                });
-            }
-        } else {            
-            this.setState({
-                accountNumber: e.target.value
-            })
-        }
+        this.setState({
+            accountNumber: e.target.value
+        })
     }
 
     handleChangeRemiderName = (e) => {
@@ -72,9 +72,57 @@ class AddReceiver extends Component
     }
 
     handleAddReceiver = () => {
-        alert("Add");
-        this.props.history.push('/receiver');
+        alert("Add");   
+        let receiver = {
+            reciver_account_number: this.state.accountNumber,
+            user_id: this.props.userId,
+            remider_name: this.state.remiderName
+        }
+        let accountNumber = this.state.accountNumber.replace("-", '');
+        accountNumber = accountNumber.replace("-", '');
+        accountNumber = accountNumber.replace("-", '');
+
+        axios({
+            method:'post',
+            url: `http://localhost:3000/api/recievers`,
+            data: {
+                reciver_account_number: accountNumber,
+                user_id: this.props.userId,
+                remider_name: this.state.remiderName
+            },
+            headers: {
+                'x-access-token': localStorage.getItem('access_token'),
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => {
+            this.props.addReceiver(receiver);
+            this.props.history.push('/receiver');  
+        })
+        .catch(err => {
+            alert("Account is incorrect or existed!");
+            if (err.response.status === 401) {
+                axios({
+                    method: 'post',
+                    url: `http://localhost:3000/api/authen/accesstoken`,
+                    data: {
+                        refesh_token: localStorage.getItem("refresh_token")
+                    },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(res => {
+                        localStorage.setItem('access_token', res.data.access_token)
+                        this.handleAddReceiver();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
+        })        
     }
+
     render() {
         const { classes } = this.props;
         return(
@@ -84,18 +132,21 @@ class AddReceiver extends Component
                 </div>
                 <div className="row add-receiver-form mr-0 ml-0 pl-5 pr-5">
                     <div className="col-4">
-                        <TextField
+                    <InputMask {...this.props} mask="999-999-999-999" maskChar="-" 
+                        onChange={this.handleOnchangeAccountNumber}
+                        value={this.state.accountNumber}
+                    >
+                        {() => <TextField
                             id="outlined-email-input"
                             label="Account Number"
                             className={classes.textField}
                             type="text"
-                            name="accountnumber"                           
+                            name="account-number"
                             margin="normal"
                             variant="outlined"
-                            fullWidth
-                            value={this.state.accountNumber}
-                            onChange={this.handleOnchangeAccountNumber}
-                        />
+                            fullWidth                                            
+                        />}
+                    </InputMask>
                     </div>
                     <div className="col-4">
                         <TextField
@@ -124,5 +175,5 @@ AddReceiver.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withRouter(withStyles(styles)(AddReceiver));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(withStyles(styles)(AddReceiver)));
 

@@ -121,13 +121,49 @@ class Payment extends Component {
                                     }
                                 })
                                 .catch(err => {
-                                    console.log(err);
+                                    if (err.response.status === 401) {
+                                        axios({
+                                            method: 'post',
+                                            url: `http://localhost:3000/api/authen/accesstoken`,
+                                            data: {
+                                                refesh_token: localStorage.getItem("refresh_token")
+                                            },
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            }
+                                        })
+                                            .then(res => {
+                                                localStorage.setItem('access_token', res.data.access_token)
+                                                this.handleNext();
+                                            })
+                                            .catch(err => {
+                                                console.log(err);
+                                            })
+                                    }
                                 })
                         }
 
                     })
                     .catch(err => {
-                        console.log(err);
+                        if (err.response.status === 401) {
+                            axios({
+                                method: 'post',
+                                url: `http://localhost:3000/api/authen/accesstoken`,
+                                data: {
+                                    refesh_token: localStorage.getItem("refresh_token")
+                                },
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then(res => {
+                                    localStorage.setItem('access_token', res.data.access_token)
+                                    this.handleNext();
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                })
+                        }
                     })
             }
         }
@@ -163,7 +199,25 @@ class Payment extends Component {
                     }
                 })
                 .catch(err => {
-
+                    if (err.response.status === 401) {
+                        axios({
+                            method: 'post',
+                            url: `http://localhost:3000/api/authen/accesstoken`,
+                            data: {
+                                refesh_token: localStorage.getItem("refresh_token")
+                            },
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(res => {
+                                localStorage.setItem('access_token', res.data.access_token)
+                                this.handleNext();
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    }
                 })
             }
 
@@ -232,7 +286,25 @@ class Payment extends Component {
             });
         })
         .catch(err => {
-            console.log(err);
+            if (err.response.status === 401) {
+                axios({
+                    method: 'post',
+                    url: `http://localhost:3000/api/authen/accesstoken`,
+                    data: {
+                        refesh_token: localStorage.getItem("refresh_token")
+                    },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(res => {
+                        localStorage.setItem('access_token', res.data.access_token)
+                        this.handleCheckAccount();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
         })
     }
 

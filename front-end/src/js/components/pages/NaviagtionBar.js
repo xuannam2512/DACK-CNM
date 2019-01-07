@@ -1,11 +1,30 @@
 import React, { Component } from 'react'
 import { Link, withRouter } from "react-router-dom"
+import { connect } from 'react-redux'
+import axios from 'axios'
 
 //import css
 import '../../../css/navigationbar.css'
 
 //import image
 import logo from '../../../image/logo2.png'
+
+import { logout } from '../../actions/index'
+
+const mapStateToProps = state => {
+    return { 
+        userId: state.userId
+    };
+};
+
+
+const mapDispatchToProps = dispatch => {
+    return {
+        logout: () => {
+            return dispatch(logout());
+        } 
+    };
+};
 
 class NavigationBar extends Component
 {
@@ -15,6 +34,46 @@ class NavigationBar extends Component
         this.state = {
 
         }
+    }
+
+    handleLogOut =  () => {
+        axios({
+            method:'post',
+            url: `http://localhost:3000/api/users/logout`,
+            data: {
+                userId: this.props.userId
+            },
+            headers: {
+                'x-access-token': localStorage.getItem('access_token')
+            }
+        })
+        .then(res => {
+            console.log(res);
+            localStorage.clear();
+            this.props.logout();
+            this.props.history.push('/');
+        })
+        .catch(err => {
+            if (err.response.status === 401) {
+                axios({
+                    method: 'post',
+                    url: `http://localhost:3000/api/authen/accesstoken`,
+                    data: {
+                        refesh_token: localStorage.getItem("refresh_token")
+                    },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(res => {
+                        localStorage.setItem('access_token', res.data.access_token)
+                        this.handleLogOut();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
+        })
     }
 
     render() {
@@ -47,7 +106,7 @@ class NavigationBar extends Component
                                 </div>
                                 <div className="col-2 pl-0 pr-0">
                                     <div className="btn-logout">
-                                        <button className="btn btn-defaul btn-primary">
+                                        <button className="btn btn-defaul btn-primary" onClick={() => {this.handleLogOut()}}>
                                             Logout
                                         </button>
                                     </div>                                    
@@ -60,4 +119,4 @@ class NavigationBar extends Component
     }
 }
 
-export default withRouter(NavigationBar);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(NavigationBar));

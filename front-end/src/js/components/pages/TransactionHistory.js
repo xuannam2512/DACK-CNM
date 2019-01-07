@@ -3,6 +3,7 @@ import { connect } from "react-redux"
 import NumberFormat from 'react-number-format'
 import Pagination from "react-js-pagination"
 import { Link } from "react-router-dom"
+import axios from 'axios'
 
 //font awesome
 import '../../../../node_modules/font-awesome/css/font-awesome.min.css'
@@ -13,10 +14,23 @@ import '../../../css/Home.css'
 //import image
 import bankLogo from '../../../image/logo2.png'
 
+//import action
+import { loadTransactions } from '../../actions/index'
 
 //map state to props
 const mapStateToProps = state => {
-    return { transactions: state.transactions };
+    console.log(state);
+    return {
+        transactions: state.transactions
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        loadTransactions: transactions => {
+            return dispatch(loadTransactions(transactions));
+        }
+    };
 };
 
 //define
@@ -86,9 +100,59 @@ class Receiver extends Component
     }  
 
     componentDidMount() {
+        var pathname = this.props.location.pathname;
+
+        var res = pathname.split("/");
+        var account_number = res[3];
+
+        axios({
+            method:'get',
+            url: `http://localhost:3000/api/transactions/user/${account_number}`,
+            headers: {
+                'x-access-token': localStorage.getItem('access_token')
+            }
+        })
+        .then(res => {
+            
+            this.props.loadTransactions(res.data.filter(transaction => transaction.success === 1));
+            this.setState({
+                transactions: this.props.transactions,
+                transactionsDisplay: this.props.transactions.slice(0, NUMBER_OF_ITEM),
+                transactionsFilter: this.props.transactions,
+                activePage: 1,
+                itemsCountPerPage: 1,
+                totalItemsCount: parseInt(this.props.transactions.length / NUMBER_OF_ITEM) + 1,
+                pageRangeDisplayed:5,   
+            });
+        })
+        .catch(err => {
+            if (err.response.status === 401) {
+                axios({
+                    method: 'post',
+                    url: `http://localhost:3000/api/authen/accesstoken`,
+                    data: {
+                        refesh_token: localStorage.getItem("refresh_token")
+                    },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(res => {
+                        localStorage.setItem('access_token', res.data.access_token)
+                        this.deleteAccount();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            }
+        });
+
+        
+    }
+
+    componentWillReceiveProps(nextProps) {
         this.setState({
-            transactionsDisplay: this.state.transactions.slice(0, NUMBER_OF_ITEM),
-            transactionsFilter: this.state.transactions
+            transactions: nextProps.transactions
         })
     }
 
@@ -102,11 +166,7 @@ class Receiver extends Component
                     </div>
                     <div className="col-md-6">
                         <div className="row mr-0 ml-0 bank-account-number">                         
-                            <NumberFormat 
-                                value={transaction.transaction_id}
-                                format="#### - #### - ####"
-                                className="format-custom"
-                            />
+                            <span className="balance-title">{transaction.transaction_id}</span>
                         </div>
                         <div className="row mr-0 ml-0 bank-account-balance">
                             <span className="balance-title">Amount:</span>
@@ -120,7 +180,7 @@ class Receiver extends Component
                         </div>
                     </div>
                     <div className="col-md-5 pr-4 bank-feature">
-                        <Link to="/transaction/detail" className="link-payment">
+                        <Link to={`/transaction/detail/${transaction.transaction_id}`} className="link-payment">
                             <span className="transaction-detail">
                                 <i className="fa fa-edit" aria-hidden="true"></i>
                             </span>
@@ -176,4 +236,4 @@ class Receiver extends Component
     }
 }
 
-export default connect(mapStateToProps)(Receiver);
+export default connect(mapStateToProps, mapDispatchToProps)(Receiver);

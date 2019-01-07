@@ -24,13 +24,22 @@ exports.login = (userEntity) => {
 
 exports.logout = (userId) => {
     //write some code here
-    var sql =  `delete from user_refresh_token where user_id = ${userId}`;
+    var sql =  `delete from users_refresh_token where user_id = ${userId}`;
     return db.excuteQuery(sql);
 }
 
 exports.getUserById = (userId) => {
     //write some code here
     var sql =  `select * from users where user_id = ${userId}`;
+    return db.excuteQuery(sql);
+}
+
+//get user by token
+exports.getUserByToken = token => {
+    var sql = `SELECT * ` +
+    `FROM dackcnm.users u join dackcnm.users_refresh_token urt on urt.user_id = u.user_id ` + 
+    `where urt.refresh_token like '${token}'`;
+
     return db.excuteQuery(sql);
 }
 

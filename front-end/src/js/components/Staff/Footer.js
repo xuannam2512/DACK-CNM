@@ -22,9 +22,9 @@ class Footer extends Component {
 
     render() {
         return (
-        <div>
+        <div className="container-fluid">
              {/* Footer */}
-      <footer className="page-footer font-small unique-color-dark" style={{backgroundColor:'#1C2331'}}>
+        <footer className="page-footer font-small unique-color-dark" style={{backgroundColor:'#1C2331'}}>
         <div style={{backgroundColor: '#6351ce'}}>
           <div className="container">
             {/* Grid row*/}
@@ -75,7 +75,7 @@ class Footer extends Component {
             </div>
             {/* Grid column */}
             {/* Grid column */}
-            <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+            <div className="col-md-9 col-lg-8 col-xl-9 mx-auto mb-md-0 mb-4">
               {/* Links */}
               <h6 className="text-uppercase font-weight-bold">Contact</h6>
               <hr className="deep-purple accent-2 mb-4 mt-0 d-inline-block mx-auto" style={{width: '60px'}} />

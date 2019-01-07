@@ -15,13 +15,14 @@ import '../../../css/Home.css'
 import bankLogo from '../../../image/logo2.png'
 
 //import action
-import { loadAccounts } from '../../actions/index'
+import { loadAccounts, lockAccount } from '../../actions/index'
 
 
 //map state to props
 const mapStateToProps = state => {
     return { 
-        accounts: state.accounts
+        accounts: state.accounts,
+        userId: state.userId
     };
 };
 
@@ -29,7 +30,10 @@ const mapDispatchToProps = dispatch => {
     return {
         loadAccounts: accounts => {
             return dispatch(loadAccounts(accounts));
-        } 
+        },
+        lockAccount: account => {
+            return dispatch(lockAccount(account));
+        }
     };
 };
 
@@ -68,8 +72,53 @@ class Home extends Component {
         alert("Searching...");
     }
 
-    deleteAccount = () => {
-        alert("Delete Account");
+    deleteAccount = (account) => {
+        if(parseInt(account.balance) > 0)
+        {
+            alert("Balance must equal 0 đ");
+        } else {
+            alert("Delete Account");
+            axios({
+                method: 'post',
+                url: `http://localhost:3000/api/accounts/lock`,
+                data: {
+                    account_number: account.account_number
+                },
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'x-access-token': localStorage.getItem('access_token')
+                }
+            })
+                .then(res => {
+                    account.status = 0;
+                    console.log(account.status);
+                    this.props.lockAccount(account);
+                })
+                .catch(err => {
+                    if (err.response.status === 401) {
+                        axios({
+                            method: 'post',
+                            url: `http://localhost:3000/api/authen/accesstoken`,
+                            data: {
+                                refesh_token: localStorage.getItem("refresh_token")
+                            },
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(res => {
+                                localStorage.setItem('access_token', res.data.access_token)
+                                this.deleteAccount();
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    }
+                })
+        }
+        
     }
 
     onChangeSearch = (e) => {
@@ -110,7 +159,7 @@ class Home extends Component {
         //call api to load accounts
         axios({
             method:'get',
-            url: `http://localhost:3000/api/accounts`,
+            url: `http://localhost:3000/api/accounts/users/${this.props.userId}`,
             headers: {
                 'x-access-token': localStorage.getItem('access_token')
             }
@@ -129,7 +178,26 @@ class Home extends Component {
             });
         })
         .catch(err => {
-            console.log(err);
+            if(err.response.status === 401)
+            {
+                axios({
+                    method:'post',
+                    url: `http://localhost:3000/api/authen/accesstoken`,
+                    data: {
+                        refesh_token: localStorage.getItem("refresh_token")
+                    },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(res => {
+                    localStorage.setItem('access_token', res.data.access_token)
+                    this.componentDidMount();
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            }
         });
 
         
@@ -137,7 +205,13 @@ class Home extends Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            accounts: nextProps.accounts
+            accounts: nextProps.accounts.filter(account => account.status === 1),
+            accountsDisplay: nextProps.accounts.filter(account => account.status === 1).slice(0, NUMBER_OF_ITEM),
+            accountsFilter: nextProps.accounts,
+            activePage: 1,
+            itemsCountPerPage: 1,
+            totalItemsCount: parseInt(nextProps.accounts.length / NUMBER_OF_ITEM) + 1,
+            pageRangeDisplayed:5,   
         })
     }
 
@@ -169,7 +243,7 @@ class Home extends Component {
                         </div>                                     
                     </div>
                     <div className="col-md-5 pr-4 bank-feature">
-                        <Link to="/transaction/history" className="link-payment">
+                        <Link to={`/transaction/history/${account.account_number}`} className="link-payment">
                             <span className="transaction-history"
                             onClick={() => this.viewTransactionHistory()}>
                                 <i className="fa fa-history" aria-hidden="true"></i>
@@ -183,7 +257,7 @@ class Home extends Component {
                         </Link>
                         
                         <span className="delete"
-                        onClick={() => this.deleteAccount()}>
+                        onClick={() => this.deleteAccount(account)}>
                             <i className="fa fa-trash" aria-hidden="true"></i>
                         </span>                                    
                     </div>
