@@ -49,7 +49,7 @@ class Home extends Component {
                     <Card className={classes.card}>
                             <CardContent className={classNames('d-flex align-items-end flex-column')}>
                             <Typography component="p" style={{fontSize:'14px'}}>
-                            USER ID
+                            User ID
                             </Typography>
                             <Typography component="h3"  style={{fontSize:'35px'}}>
                             49/50 
@@ -60,7 +60,7 @@ class Home extends Component {
                             <div className={classNames('d-flex justify-content-start align-items-center' )}>
                             <i style={{ color: '#303F9F' , width:16 , height:16 }} className="fa fa-warning" aria-hidden="true"></i>
                             <Typography component="p" style={{fontSize:'14px'}}>
-                                HOME
+                                Home
                             </Typography>
                             </div>
                             </CardContent>
@@ -76,15 +76,15 @@ class Home extends Component {
                             Revenue
                             </Typography>
                             <Typography component="h3"  style={{fontSize:'35px'}}>
-                            $34,245
+                            $3,425
                             </Typography>
                             </CardContent>
                         <Divider variant="inset" style={{margin:'0 10px'}} />
                             <CardContent className={classNames('d-flex')}>
                             <div className={classNames('d-flex justify-content-start align-items-center' )}>
-                            <i style={{ color: '#303F9F' , width:16 , height:16 }} className="fa fa-tag" aria-hidden="true"></i>
+                            <i style={{ color: '#303F9F' , width:16 , height:16 }} className="fa fa-tags" aria-hidden="true"></i>
                             <Typography component="p" style={{fontSize:'14px'}}>
-                                USER ID
+                                CardContent
                             </Typography>
                             </div>
                             </CardContent>
@@ -106,9 +106,9 @@ class Home extends Component {
                         <Divider variant="inset" style={{margin:'0 10px'}} />
                             <CardContent className={classNames('d-flex')}>
                             <div className={classNames('d-flex justify-content-start align-items-center' )}>
-                            <i style={{ color: '#303F9F' , width:16 , height:16 }} className="fa fa-tag" aria-hidden="true"></i>
+                            <i style={{ color: '#303F9F' , width:16 , height:16 }} className="fa fa-shield" aria-hidden="true"></i>
                             <Typography component="p" style={{fontSize:'14px'}}>
-                                USER ID
+                                Print page
                             </Typography>
                             </div>
                             </CardContent>
@@ -132,7 +132,7 @@ class Home extends Component {
                             <div className={classNames('d-flex justify-content-start align-items-center' )}>
                             <i style={{ color: '#303F9F' , width:16 , height:16 }} className="fa fa-tag" aria-hidden="true"></i>
                             <Typography component="p" style={{fontSize:'14px'}}>
-                                USER ID
+                                Clever
                             </Typography>
                             </div>
                             </CardContent>
@@ -161,7 +161,7 @@ class Home extends Component {
                             <div className={classNames('d-flex justify-content-start align-items-center' )}>
                             <i style={{ color: '#303F9F' , width:16 , height:16 }} className="fa fa-warning" aria-hidden="true"></i>
                             <Typography component="p" style={{fontSize:'14px'}}>
-                                HOME
+                                Hopefully
                             </Typography>
                             </div>
                             </CardContent>
@@ -193,7 +193,7 @@ class Home extends Component {
                             <div className={classNames('d-flex justify-content-start align-items-center' )}>
                             <i style={{ color: '#303F9F' , width:16 , height:16 }} className="fa fa-tag" aria-hidden="true"></i>
                             <Typography component="p" style={{fontSize:'14px'}}>
-                                USER ID
+                                Success
                             </Typography>
                             </div>
                             </CardContent>
@@ -216,15 +216,15 @@ class Home extends Component {
                             Fixed Issues
                             </Typography>
                             <Typography component="h3"  style={{fontSize:'35px'}}>
-                            75
+                            90
                             </Typography>
                             </CardContent>
                         <Divider variant="inset" style={{margin:'0 10px'}} />
                             <CardContent className={classNames('d-flex')}>
                             <div className={classNames('d-flex justify-content-start align-items-center' )}>
-                            <i style={{ color: '#303F9F' , width:16 , height:16 }} className="fa fa-tag" aria-hidden="true"></i>
+                            <i style={{ color: '#303F9F' , width:16 , height:16 }} className="fa fa-circle" aria-hidden="true"></i>
                             <Typography component="p" style={{fontSize:'14px'}}>
-                                USER ID
+                                Scholarship
                             </Typography>
                             </div>
                             </CardContent>

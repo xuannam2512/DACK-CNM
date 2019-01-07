@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Route, Switch } from "react-router-dom"
+import {  Route, Switch } from "react-router-dom"
 
 
 //import component
@@ -39,7 +39,7 @@ class PageStaff extends Component {
                     </div>
                     <Footer/>
                 </div>
-            </div>         
+            </div>       
         )
     }
 }
