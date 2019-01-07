@@ -32,10 +32,14 @@ class NavigationBar extends Component
         super();
 
         this.state = {
-
+            xStatusMenu: 1,
         }
+        this._handleChangeNameStatus = this._handleChangeNameStatus.bind(this)
     }
-
+    _handleChangeNameStatus = (name,value)  =>{
+        
+        this.setState({ [name]: value });
+    };
     handleLogOut =  () => {
         axios({
             method:'post',
@@ -89,20 +93,25 @@ class NavigationBar extends Component
                             </div>
                             
                             <div className="row nav-menu">
-                                <div className="col-2 pl-0 pr-0 menu-item">
-                                    <Link to="/" className="item">HOME</Link>                                
+                                <div style={ {backgroundColor : this.state.xStatusMenu === 1? 'rgba(107, 114, 118, 0.1)':'transparent' }}
+                                className="col-2 pl-0 pr-0 menu-item">
+                                    <Link onClick={()=>{ this._handleChangeNameStatus('xStatusMenu',1) }} to="/" className="item">HOME</Link>                                
                                 </div>
-                                <div className="col-2 pl-0 pr-0 menu-item">
-                                    <Link to="/about" className="item">ABOUT</Link>                                
+                                <div style={ {backgroundColor : this.state.xStatusMenu === 2? 'rgba(107, 114, 118, 0.1)':'transparent' }}
+                                className="col-2 pl-0 pr-0 menu-item">
+                                    <Link onClick={()=>{ this._handleChangeNameStatus('xStatusMenu',2) }} to="/about" className="item">ABOUT</Link>                                
                                 </div>
-                                <div className="col-2 pl-0 pr-0 menu-item">
-                                    <Link to="/account" className="item">ACCOUNT</Link>
+                                <div style={ {backgroundColor : this.state.xStatusMenu === 3? 'rgba(107, 114, 118, 0.1)':'transparent' }}
+                                className="col-2 pl-0 pr-0 menu-item">
+                                    <Link onClick={()=>{ this._handleChangeNameStatus('xStatusMenu',3) }} to="/account" className="item">ACCOUNT</Link>
                                 </div>
-                                <div className="col-2 pl-0 pr-0 menu-item">
-                                    <Link to="/receiver" className="item">RECEIVER</Link>
+                                <div style={ {backgroundColor : this.state.xStatusMenu === 4? 'rgba(107, 114, 118, 0.1)':'transparent' }}
+                                className="col-2 pl-0 pr-0 menu-item">
+                                    <Link onClick={()=>{ this._handleChangeNameStatus('xStatusMenu',4) }} to="/receiver" className="item">RECEIVER</Link>
                                 </div>
-                                <div className="col-2 pl-0 pr-0 menu-item">
-                                    <Link to="/contact" className="item">CONTACT</Link>
+                                <div style={ {backgroundColor : this.state.xStatusMenu === 5? 'rgba(107, 114, 118, 0.1)':'transparent' }}
+                                className="col-2 pl-0 pr-0 menu-item">
+                                    <Link onClick={()=>{ this._handleChangeNameStatus('xStatusMenu',5) }} to="/contact" className="item">CONTACT</Link>
                                 </div>
                                 <div className="col-2 pl-0 pr-0">
                                     <div className="btn-logout">

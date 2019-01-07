@@ -12,8 +12,8 @@ import { login } from '../actions/index'
 
 const mapStateToProps = state => {
     return { 
-        isLogined: state.isLogined,
-        permission: state.permission
+        isLogined: true,
+        permission: 0
     };
 };
 

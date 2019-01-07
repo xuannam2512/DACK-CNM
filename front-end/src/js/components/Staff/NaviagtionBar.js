@@ -30,10 +30,15 @@ class NavigationBar extends Component
         super();
 
         this.state = {
-
+            xStatusMenu: 1,
         }
+        this._handleChangeNameStatus = this._handleChangeNameStatus.bind(this)
     }
 
+    _handleChangeNameStatus = (name,value)  =>{
+        
+        this.setState({ [name]: value });
+    };
     handleLogOut =  () => {
         axios({
             method:'post',
@@ -87,21 +92,21 @@ class NavigationBar extends Component
                             </div>
                             
                             <div className="row nav-menu">
-                                <div style={ {backgroundColor : window.location.pathname ==='/' ? 'rgba(107, 114, 118, 0.1)':'transparent' }} 
+                                <div style={ {backgroundColor : this.state.xStatusMenu === 1? 'rgba(107, 114, 118, 0.1)':'transparent' }} 
                                 className="col-2 pl-0 pr-0 menu-item">
-                                    <Link to="/" className="item" >HOME</Link>                                
+                                    <Link  onClick={()=>{ this._handleChangeNameStatus('xStatusMenu',1) }}  to="/" className="item" >HOME</Link>                                
                                 </div>
-                                <div style={ {backgroundColor : window.location.pathname ==='/pageregistercustomer' ? 'rgba(107, 114, 118, 0.1)':'transparent' }} 
+                                <div style={ {backgroundColor : this.state.xStatusMenu === 2 ? 'rgba(107, 114, 118, 0.1)':'transparent' }} 
                                  className="col-2 pl-0 pr-0 menu-item">
-                                    <Link to="/pageregistercustomer" className="item">USER</Link>                                
+                                    <Link  onClick={()=>{ this._handleChangeNameStatus('xStatusMenu',2) }}  to="/pageregistercustomer" className="item">USER</Link>                                
                                 </div>
-                                <div style={ {backgroundColor : window.location.pathname ==='/pageaddcustomer' ? 'rgba(107, 114, 118, 0.1)':'transparent' }} 
+                                <div style={ {backgroundColor : this.state.xStatusMenu === 3 ? 'rgba(107, 114, 118, 0.1)':'transparent' }} 
                                 className="col-2 pl-0 pr-0 menu-item">
-                                    <Link to="/pageaddcustomer" className="item">AMOUNT</Link>
+                                    <Link  onClick={()=>{ this._handleChangeNameStatus('xStatusMenu',3) }}  to="/pageaddcustomer" className="item">ACCOUNT</Link>
                                 </div>
-                                <div style={ {backgroundColor : window.location.pathname ==='/pagerecharge' ? 'rgba(107, 114, 118, 0.1)':'transparent' }} 
+                                <div style={ {backgroundColor : this.state.xStatusMenu === 4 ? 'rgba(107, 114, 118, 0.1)':'transparent' }} 
                                 className="col-2 pl-0 pr-0 menu-item">
-                                    <Link to="/pagerecharge" className="item">RECHARGE</Link>
+                                    <Link  onClick={()=>{ this._handleChangeNameStatus('xStatusMenu',4) }}  to="/pagerecharge" className="item">RECHARGE</Link>
                                 </div>
                                 
                                 <div className="col-2 pl-0 pr-0">
@@ -114,7 +119,7 @@ class NavigationBar extends Component
                             </div>
                         </div>
                     </div>
-                </div>         
+                </div>
         )
     }
 }
